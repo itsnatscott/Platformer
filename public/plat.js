@@ -4,51 +4,6 @@
 })();
 
 
-var canvas = document.getElementById("canvas"),
-ctx = canvas.getContext("2d"),
-width=800,
-height=200,
-player = {
-	x: width/2,
-	y: height - 14,
-	width:9,
-	height:14,
-	speed:3,
-	velX:0,
-	velY:0,
-	jumping: false
-};
-keys = [];
-document.body.addEventListener("keydown",function(e){
-	keys[e.keyCode] = true;
-});
-document.body.addEventListener("keyup", function(e){
-	keys[e.keyCode]=false;
-});
-
-friction = 0.8;
-gravity = 0.25;
-var boxes = []
-
-boxes.push({
-	x: 0,
-	y:0,
-	width: 10,
-	height:height
-});
-
-boxes.push({
-	x:0,
-	y: height -2,
-	width:width,
-	height: 50
-});
-boxes.push({
-	x: width-10,
-	y:0,
-	width:50,
-	height:height
-});
 function update(){
 	if (keys[38] || keys[32]){
 		//up arrow or space
@@ -91,6 +46,53 @@ function update(){
 	ctx.fillRect(player.x,player.y, player.width,player.height);
 	requestAnimationFrame(update);
 }
+var boxes = []
+
+boxes.push({
+	x: 0,
+	y:0,
+	width: 10,
+	height:height
+});
+
+boxes.push({
+	x:0,
+	y: height -2,
+	width:width,
+	height: 50
+});
+boxes.push({
+	x: width-10,
+	y:0,
+	width:50,
+	height:height
+});
+
+var canvas = document.getElementById("canvas"),
+ctx = canvas.getContext("2d"),
+width=800,
+height=200,
+player = {
+	x: width/2,
+	y: height - 14,
+	width:9,
+	height:14,
+	speed:3,
+	velX:0,
+	velY:0,
+	jumping: false
+};
+keys = [];
+document.body.addEventListener("keydown",function(e){
+	keys[e.keyCode] = true;
+});
+document.body.addEventListener("keyup", function(e){
+	keys[e.keyCode]=false;
+});
+
+friction = 0.8;
+gravity = 0.25;
+
 canvas.width = width;
 canvas.height = height;
 
