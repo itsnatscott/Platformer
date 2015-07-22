@@ -2,14 +2,15 @@
   var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
   window.requestAnimationFrame = requestAnimationFrame;
 })();
+var easter = document.getElementById("easter")
 
 var canvas = document.getElementById("canvas"),
 context = canvas.getContext("2d"),
-width=1200,
-height=235,
+width=1336,
+height=900,
 player = {
   x: width/2,
-  y: height - 14,
+  y: 221,
   width:6,
   height:14,
   speed:3,
@@ -27,355 +28,439 @@ canvas.width = width;
 canvas.height = height;
 // write on canvas
 var points = 0
+var lives = []
 Score = function(){
-  context.fillStyle = "red";
+  context.fillStyle = "slateGray";
   context.font = "bold 30px courier"
-  context.fillText(points,1100,185);
+  context.fillText(points,1120+68,185);
 }
+Lose = function(){
+  context.font = "bold 20px courier"
+  context.fillText("GAME OVER",1153+68,221)
+}
+
 
 var boxes = []
 var cloudBg = []
+var controlBox =[]
+var ctrlCounter = 0
+var projPic = ["proj_pic0","proj_pic1","proj_pic2","proj_pic3"]
+var elevator = []
 
+elevator.push({
+  x:80,
+  y:700,
+  width:60,
+  height:10,
+  dir: 1
+});
 
-//floor
+// set up slide show control buttons
+//right box
+controlBox.push({
+  x:1140-200+68,
+  y:600,
+  width:60,
+  height:60
+});
+
+//left box
+controlBox.push({
+  x:200+68,
+  y:600,
+  width:60,
+  height:60
+});
+
+//life markers
+
+lives.push({
+  x:1318,
+  y:5,
+  width:3,
+  height:7
+});
+
+lives.push({
+  x:1313,
+  y:5,
+  width:3,
+  height:7
+});
+
+lives.push({
+  x:1308,
+  y:5,
+  width:3,
+  height:7
+});
+
+//Bottom floor
 boxes.push({
   x:0,
-  y: height -10,
+  y: 750,
   width:width,
+  height: 30
+});
+// roof
+boxes.push({
+  x:590+68,
+  y: 225,
+  width:600,
   height: 10
 });
-//bottom right
 boxes.push({
-  x: width-10,
-  y:120,
-  width:50,
-  height:120
+  x:90+68,
+  y: 225,
+  width:400,
+  height: 10
 });
-//top right
-// boxes.push({
-//   x: width-10,
-//   y:-90,
-//   width:10,
-//   height:150
-// });
-//bottom left
 boxes.push({
-  x: 0,
-  y:120,
-  width: 10,
-  height:height-60
+  x:-68+68,
+  y: 225,
+  width:80,
+  height: 10
 });
-//top left
-// boxes.push({
-//   x:0,
-//   y:0,
-//   width:10,
-//   height:90
-// });
+boxes.push({
+  x:1300,
+  y: 225,
+  width:36,
+  height: 10
+});
 
 ///obsticle boxes
 
 //N
 boxes.push({
-  x: 40,
+  x: 40+68,
   y: 25,
   width: 20,
   height: 180
 });
 
 boxes.push({
-  x: 60,
+  x: 60+68,
   y: 45,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 80,
+  x: 80+68,
   y: 65,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 100,
+  x: 100+68,
   y: 85,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 120,
+  x: 120+68,
   y: 105,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 140,
+  x: 140+68,
   y: 125,
+  width: 20,
+  height: 20
+});
+boxes.push({
+  x: 160+68,
+  y: 145,
   width: 20,
   height: 20
 });
 
 boxes.push({
-  x: 180,
+  x: 180+68,
   y: 25,
   width: 20,
-  height: 180
+  height: 100
+});
+boxes.push({
+  x: 180+68,
+  y: 145,
+  width: 20,
+  height: 60
 });
 //A
 boxes.push({
-  x: 220,
+  x: 220+68,
   y: 65,
   width: 20,
   height: 140
 });
 boxes.push({
-  x: 240,
+  x: 240+68,
   y: 105,
   width: 60,
   height: 20
 });
 boxes.push({
-  x: 240,
+  x: 240+68,
   y: 45,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 300,
+  x: 300+68,
   y: 65,
   width: 20,
   height: 60
 });
 boxes.push({
-  x: 300,
+  x: 300+68,
   y: 145,
   width: 20,
   height: 60
 });
 
 boxes.push({
-  x: 260,
+  x: 260+68,
   y: 25,
   width: 20,
   height: 20
 });
 //T
 boxes.push({
-  x: 320,
+  x: 320+68,
   y: 25,
   width: 60,
   height: 20
 });
 boxes.push({
-  x: 400,
+  x: 400+68,
   y: 25,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 360,
+  x: 360+68,
   y: 45,
   width: 20,
   height: 40
 });
 boxes.push({
-  x: 360,
+  x: 360+68,
   y: 105,
   width: 20,
   height: 100
 });
 //S
 boxes.push({
-  x: 460,
+  x: 480+68,
   y: 45,
   width: 20,
   height: 40
 });
 boxes.push({
-  x: 480,
+  x: 500+68,
   y: 25,
   width: 80,
   height: 20
 });
 boxes.push({
-  x: 560,
+  x: 580+68,
   y: 45,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 500,
+  x: 520+68,
   y: 105,
   width: 40,
   height: 20
 });
 boxes.push({
-  x: 540,
+  x: 560+68,
   y: 125,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 560,
+  x: 580+68,
   y: 145,
   width: 20,
   height: 40
 });
 boxes.push({
-  x: 480,
+  x: 500+68,
   y: 185,
   width: 80,
   height: 20
 });
 boxes.push({
-  x: 460,
+  x: 480+68,
   y: 165,
   width: 20,
   height: 20
 });
 //C
 boxes.push({
-  x: 600,
+  x: 620+68,
   y: 45,
   width: 20,
   height: 80
 });
 boxes.push({
-  x: 600,
+  x: 620+68,
   y: 145,
   width: 20,
   height: 40
 });
 boxes.push({
-  x: 620,
+  x: 640+68,
   y: 185,
   width: 60,
   height: 20
 });
 boxes.push({
-  x: 680,
+  x: 700+68,
   y: 165,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 620,
+  x: 640+68,
   y: 25,
   width: 60,
   height: 20
 });
 boxes.push({
-  x: 680,
+  x: 700+68,
   y: 45,
   width: 20,
   height: 20
 });
 //O
 boxes.push({
-  x: 720,
+  x: 740+68,
   y: 45,
   width: 20,
   height: 60
 });
 boxes.push({
-  x: 720,
+  x: 740+68,
   y: 125,
   width: 20,
   height: 60
 });
 boxes.push({
-  x: 740,
+  x: 760+68,
   y: 25,
   width: 40,
   height: 20
 });
 boxes.push({
-  x: 740,
+  x: 760+68,
   y: 185,
   width: 60,
   height: 20
 });
 boxes.push({
-  x: 800,
+  x: 820+68,
   y: 45,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 800,
+  x: 820+68,
   y: 85,
   width: 20,
   height: 100
 });
 //T
 boxes.push({
-  x: 840,
+  x: 860+68,
   y: 25,
   width: 60,
   height: 20
 });
 boxes.push({
-  x: 920,
+  x: 940+68,
   y: 25,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 880,
+  x: 900+68,
   y: 45,
   width: 20,
   height: 80
 });
 boxes.push({
-  x: 880,
+  x: 900+68,
   y: 145,
   width: 20,
   height: 60
 });
 //T
 boxes.push({
-  x: 960,
+  x: 980+68,
   y: 25,
   width: 100,
   height: 20
 });
 boxes.push({
-  x: 1040,
+  x: 1060+68,
   y: 25,
   width: 20,
   height: 20
 });
 boxes.push({
-  x: 1000,
+  x: 1020+68,
   y: 45,
   width: 20,
   height: 40
 });
 boxes.push({
-  x: 1000,
+  x: 1020+68,
   y: 105,
   width: 20,
   height: 100
 });
 //!
 boxes.push({
-  x:1080,
+  x:1100+68,
   y:25,
   width:20,
   height:100
 })
 boxes.push({
-  x:1120,
+  x:1140+68,
   y:25,
   width:20,
   height:100
+})
+boxes.push({
+  x:1100+68,
+  y:145,
+  width:20,
+  height:60
+})
+boxes.push({
+  x:1140+68,
+  y:145,
+  width:20,
+  height:60
 })
 //point testing ladder
-boxes.push({
-  x:1140,
-  y:180,
-  width:20,
-  height:2
-})
+// boxes.push({
+//   x:1160,
+//   y:180,
+//   width:20,
+//   height:2
+// })
+// boxes.push({
+//   x:1160,
+//   y:100,
+//   width:10,
+//   height:2
+// })
 
 //cloud
 cloud = {
@@ -415,10 +500,8 @@ cloudBg.push({
   height:2
 });
 
-
-
+//game loop
 function update(){
-  //score a point
 
   //moving cloud platform & cloudBg
   if (cloud.x < width){
@@ -433,8 +516,6 @@ function update(){
   };
 
 
-
-  context.fillStyle = "black";
   // check keys
   if (keys[38] || keys[32]) {
         // up arrow or space
@@ -461,8 +542,6 @@ function update(){
 
       player.velY += gravity;
 
-      // player.x += player.velX;
-      // player.y += player.velY;
 
       if (player.x >= width-player.width){
         player.x = 0;
@@ -470,17 +549,13 @@ function update(){
         player.x = width-player.width;
       }    
 
-      // if(player.y >= height-player.height-10){
-      //   player.y = height - player.height-10;
-      //   player.jumping = false;
-      // }
 
       context.clearRect(0,0,width,height);
       context.fillStyle = "slateGray";
       context.beginPath();
       player.grounded = false;
 
-//draw black boxes and attach collision
+//draw dark gray boxes and attach collision
 for (var i = 0; i < boxes.length; i++) {
   context.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
   var dir = colCheck(player, boxes[i]);
@@ -494,15 +569,63 @@ for (var i = 0; i < boxes.length; i++) {
     player.velY *= -1;
   }
 }
+//draw elevator
+context.rect(elevator[0].x,elevator[0].y,elevator[0].width,elevator[0].height);
+elevator[0].y = elevator[0].y + elevator[0].dir
+if(elevator[0].y >= 750){
+  elevator[0].dir = -1
+}
+if(elevator[0].y <= 225){
+  elevator[0].dir = 1
+}
+var dir = colCheck(player, elevator[0]);
+   if (dir === "1" || dir === "r"){
+    player.velX = 0;
+    player.jumping = false;
+  }else if (dir === "b"){
+    player.grounded = true;
+    player.jumping = false;
+  } else if (dir === "t") {
+    player.velY *= -1;
+  };
+
+
+//draw control boxes
+
+for (var i = 0; i< controlBox.length; i++){
+  //set counter for bump animation
+  if (controlBox[i].y < 600){ctrlCounter ++};
+  if (ctrlCounter === 5){
+    controlBox[i].y = 600;
+    ctrlCounter = 0;
+  };  
+
+  //draw control boxes to canvas
+  context.rect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
+  var dir = colCheck(player, controlBox[i]);
+   if (dir === "1" || dir === "r"){
+    player.velX = 0;
+    player.jumping = false;
+  }else if (dir === "b"){
+    player.grounded = true;
+    player.jumping = false;
+  } else if (dir === "t") {
+    controlBox[i].y = controlBox[i].y -3;
+    player.velY *= -1;
+  };
+
+};
 player.x += player.velX;
 player.y += player.velY;
 
 context.fill();
+
+
 //draw cloud
 context.fillStyle = "white"
 context.fillRect(cloud.x,cloud.y,cloud.width,cloud.height)
 var dir = colCheck(player,cloud);
-if (dir === "1" || dir === "r"){
+if (dir === "l" || dir === "r"){
   player.velX = 0;
   player.jumping = false;
 }else if (dir === "b"){
@@ -523,45 +646,78 @@ for (i=0; i<cloudBg.length; i++){
 //no collide blocks      
 context.fillStyle = "DarkGray";
 //N
-context.fillRect(160, 145, 20, 20);
+context.fillRect(180+68, 125, 20, 20);
 //A
-context.fillRect(300, 125, 20, 20);
-context.fillRect(280, 45, 20, 20);
+context.fillRect(300+68, 125, 20, 20);
+context.fillRect(280+68, 45, 20, 20);
 //T
-context.fillRect(380, 25, 20, 20);
-context.fillRect(360, 85, 20, 20);
+context.fillRect(380+68, 25, 20, 20);
+context.fillRect(360+68, 85, 20, 20);
 //S
-context.fillRect(480, 85, 20, 20);
+context.fillRect(500+68, 85, 20, 20);
 //C
-context.fillRect(600, 125, 20, 20);
+context.fillRect(620+68, 125, 20, 20);
 //O
-context.fillRect(780, 25, 20, 20);
-context.fillRect(720, 105, 20, 20);
-context.fillRect(800, 65, 20, 20);
+context.fillRect(800+68, 25, 20, 20);
+context.fillRect(740+68, 105, 20, 20);
+context.fillRect(820+68, 65, 20, 20);
 //T
-context.fillRect(880, 125, 20, 20);
-context.fillRect(900, 25, 20, 20);
+context.fillRect(900+68, 125, 20, 20);
+context.fillRect(920+68, 25, 20, 20);
 //T
-context.fillRect(1000, 85, 20, 20);
+context.fillRect(1020+68, 85, 20, 20);
 //! line
-context.fillRect(1100,25,20,100);
+context.fillRect(1120+68,25,20,100);
 //! dot
-context.fillRect(1080,145,60,60);
+context.fillRect(1120+68,145,20,60);
+
+context.fillStyle = "red";
+context.font = "bold 6px courier"
+context.fillText("score",1120+69,44);
 
 //draw score line
-context.fillStyle = "gray";
-line = context.fillRect(1100,45,20,1);
+line = {
+  x:1120+68,
+  y:45,
+  width:20,
+  height:1
+}
+context.fillRect(line.x,line.y,line.width,line.height);
+var pt = colCheck(player,line);
+if (pt === "b"){
+  player.y = player.y+5
+  points = points+1
+}
 
+// display score
+if(points>0){
+  Score();
+}
 
 
 
 // player block
-Score();
 context.fillStyle = "red";
 context.fillRect(player.x, player.y, player.width, player.height);
 //moving box/player interaction
-if(player.x >= cloud.x-15 && player.x <= cloud.x+15 && player.y <= cloud.y+18){
+if(player.x >= cloud.x-15 && player.x <= cloud.x+15 && player.y <= cloud.y && player.y >= cloud.y-14){
   player.x = player.x + 1
+};
+// display lives
+for (i=0; i<lives.length; i++){
+  context.fillRect(lives[i].x,lives[i].y,lives[i].width,lives[i].height)
+};
+
+// display game over
+if(player.y>235){
+  lives.pop()
+  // if (lives.length >= 1){
+  //   player.x = width/2;
+  //   player.y = height-18;
+  // }else{
+  //   context.fillstyle = "Red";
+  //   Lose();
+  // }
 };
 
 
@@ -602,6 +758,10 @@ function colCheck(shapeA, shapeB) {
     return colDir;
 
   }
+  
+easter.addEventListener('mouseover', function(){
+easter.src = "public/images/facesquare1.gif";
+});
 
   document.body.addEventListener("keydown", function(e) {
     keys[e.keyCode] = true;
@@ -614,3 +774,9 @@ function colCheck(shapeA, shapeB) {
   window.addEventListener("load",function(){
     update();
   });
+
+
+
+
+
+  // $('#proj_pic1').toggleClass('hide')

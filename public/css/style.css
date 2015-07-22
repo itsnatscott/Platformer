@@ -1,0 +1,176 @@
+*{
+box-sizing: border-box;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+-ms-box-sizing: border-box;
+-o-box-sizing: border-box;
+}
+
+
+body{
+overflow-y:hidden;
+margin: 0;
+}
+
+canvas{
+  left: 100px;
+  position: fixed;
+  z-index: 200;
+  top: 0;
+}
+
+#carousel{
+  left: 100px;
+  width: 1344px;
+  height: 500px;
+  background-color: rgba(100, 100,100,.5);
+  position: fixed;
+  top: 325px;
+  text-align: center;
+  z-index: -5
+}
+
+.car_pic{
+  position:relative;
+  top:50px;
+width:600px;
+height:auto;
+}
+
+#cloud{
+
+  z-index: 200;
+}
+#cloud {
+    position: fixed;
+    top: 143px;
+    left:-370px;
+    width: 100px;
+    height: 100px;x
+    -webkit-animation: mymove 12s infinite; /* Chrome, Safari, Opera */
+    animation: mymove 12s infinite;
+    animation-timing-function: linear;
+    animation-delay: 3s
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes mymove {
+    from {left: -370px;}
+    to {left: 1436px;}
+}
+
+@keyframes mymove {
+    from {left: -370px;}
+    to {left: 1436px;}
+}
+
+#easter{
+  position: fixed;
+  top: 325px;
+  width: 100px;
+  height: 125px;
+  z-index: 206
+}
+#gamebg{
+  background-color: LightSkyBlue;
+  width: 1340px;
+  height: 325px;
+  position: fixed;
+  top: 0px;
+  left: 100px;
+  z-index: 100
+}
+.hide{
+  visibility:hidden;
+}
+
+.show{
+  
+}
+.info{
+  background-color: rgba(200,200,200,.3);
+  width:600px;
+  height:81px;
+  position: relative;
+  bottom: 88px;
+  right: 0px;
+}
+
+#its {
+position: fixed;
+  top: -1px;
+  left: 128px;
+  font-size: 60px;
+  font-family: 'Niconne', cursive;
+  color: rgb(94,110,126);
+  z-index: 202;
+  }
+
+.sect{
+  text-align: center;
+  width: 1336px;
+  display: inline-block;
+  font-family: 'Niconne', cursive;
+  font-size: 25pt;
+  z-index: 415
+}
+
+
+
+li{   display: inline-block;
+    font-family: courier;
+    font-size:20pt;
+      margin-left: 40px;
+    margin-right: 40px;
+    padding:0px;
+}
+
+#main{
+  display:inline-block;
+	position: absolute;
+  top:240px;
+	left:100px;
+width: 1322px;
+height: 600px;
+z-index: 5
+}
+
+
+
+#art_li{
+  visibility: hidden;
+}
+
+#print_li{
+  visibility: hidden;
+}
+
+#link_li{
+  visibility: hidden;
+}
+
+.sidebar{
+	background-image:url(../images/sidebar.jpg);
+	width: 100px;
+	height: 1000px;
+	position: fixed;
+  z-index: 205;
+	top: 0%;
+}
+
+.tag{
+  position:relative;
+  right:0px;
+  bottom:25px;
+}
+
+
+ul
+{     text-align: center;
+    display:inline-block;
+    font-family: 'Niconne', cursive;
+    font-size:25pt;
+    margin:0px;
+    padding:0px;
+    list-style-type: none;
+}
