@@ -29,6 +29,11 @@ canvas.height = height;
 // write on canvas
 var points = 0
 var lives = []
+Reset = function(){
+  player.x = width/2;
+  player.y = 221;
+  lives.pop();
+}
 Score = function(){
   context.fillStyle = "slateGray";
   context.font = "bold 30px courier"
@@ -39,20 +44,25 @@ Lose = function(){
   context.fillText("GAME OVER",1153+68,221)
 }
 
-
+//obsticle boxes
 var boxes = []
+//background of cloud
 var cloudBg = []
+//slideshow control button array
 var controlBox =[]
 var ctrlCounter = 0
+//array of pictures in slideshow
 var projPic = ["proj_pic0","proj_pic1","proj_pic2","proj_pic3"]
+var slidePic = 0
+//elevator box array
 var elevator = []
 
 elevator.push({
-  x:80,
-  y:700,
-  width:60,
+  x:85,
+  y:235,
+  width:68,
   height:10,
-  dir: 1
+  dir: -1
 });
 
 // set up slide show control buttons
@@ -61,7 +71,9 @@ controlBox.push({
   x:1140-200+68,
   y:600,
   width:60,
-  height:60
+  height:60,
+  color:"slateGray",
+  name:"fwd"
 });
 
 //left box
@@ -69,7 +81,9 @@ controlBox.push({
   x:200+68,
   y:600,
   width:60,
-  height:60
+  height:60,
+  color:"slateGray",
+  name:"bck"
 });
 
 //life markers
@@ -100,30 +114,55 @@ boxes.push({
   x:0,
   y: 750,
   width:width,
-  height: 30
+  height: 50
 });
-// roof
+// second floor
 boxes.push({
   x:590+68,
-  y: 225,
+  y: 355,
   width:600,
   height: 10
 });
 boxes.push({
   x:90+68,
-  y: 225,
+  y: 355,
   width:400,
   height: 10
 });
 boxes.push({
   x:-68+68,
-  y: 225,
+  y: 355,
   width:80,
   height: 10
 });
 boxes.push({
   x:1300,
-  y: 225,
+  y: 355,
+  width:36,
+  height: 10
+});
+// rooftop
+boxes.push({
+  x:590+68,
+  y: 235,
+  width:600,
+  height: 10
+});
+boxes.push({
+  x:90+68,
+  y: 235,
+  width:400,
+  height: 10
+});
+boxes.push({
+  x:-68+68,
+  y: 235,
+  width:80,
+  height: 10
+});
+boxes.push({
+  x:1300,
+  y: 235,
   width:36,
   height: 10
 });
@@ -557,9 +596,10 @@ function update(){
 
 //draw dark gray boxes and attach collision
 for (var i = 0; i < boxes.length; i++) {
-  context.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+  context.fillStyle = "slateGray";
+  context.fillRect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
   var dir = colCheck(player, boxes[i]);
-  if (dir === "1" || dir === "r"){
+  if (dir === "l" || dir === "r"){
     player.velX = 0;
     player.jumping = false;
   }else if (dir === "b"){
@@ -570,24 +610,29 @@ for (var i = 0; i < boxes.length; i++) {
   }
 }
 //draw elevator
-context.rect(elevator[0].x,elevator[0].y,elevator[0].width,elevator[0].height);
+context.fillRect(elevator[0].x,elevator[0].y,elevator[0].width,elevator[0].height);
 elevator[0].y = elevator[0].y + elevator[0].dir
 if(elevator[0].y >= 750){
   elevator[0].dir = -1
 }
-if(elevator[0].y <= 225){
+if(elevator[0].y <= 235){
   elevator[0].dir = 1
 }
 var dir = colCheck(player, elevator[0]);
-   if (dir === "1" || dir === "r"){
-    player.velX = 0;
-    player.jumping = false;
-  }else if (dir === "b"){
-    player.grounded = true;
-    player.jumping = false;
-  } else if (dir === "t") {
-    player.velY *= -1;
-  };
+if (dir === "l" || dir === "r"){
+  player.velX = 0;
+  player.jumping = false;
+}else if (dir === "b"){
+  player.grounded = true;
+  player.jumping = false;
+} 
+else if (dir === "t" && player.y <= 743) {
+  player.velY *= -1;
+} 
+else if (dir === "t" && player.y === 747) {
+  elevator[0].dir = -1
+  Reset();
+};
 
 
 //draw control boxes
@@ -597,13 +642,15 @@ for (var i = 0; i< controlBox.length; i++){
   if (controlBox[i].y < 600){ctrlCounter ++};
   if (ctrlCounter === 5){
     controlBox[i].y = 600;
+    controlBox[i].color = "slateGray"
     ctrlCounter = 0;
   };  
 
-  //draw control boxes to canvas
-  context.rect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
+  //draw control boxes to canvas and attach collision
+  context.fillStyle = controlBox[i].color
+  context.fillRect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
   var dir = colCheck(player, controlBox[i]);
-   if (dir === "1" || dir === "r"){
+  if (dir === "l" || dir === "r"){
     player.velX = 0;
     player.jumping = false;
   }else if (dir === "b"){
@@ -611,7 +658,23 @@ for (var i = 0; i< controlBox.length; i++){
     player.jumping = false;
   } else if (dir === "t") {
     controlBox[i].y = controlBox[i].y -3;
+    controlBox[i].color = "LightSlateGray"
     player.velY *= -1;
+    if(controlBox[i].name === "fwd" && slidePic === 0){
+        $('#'+projPic[slidePic]).toggleClass('hide');
+        slidePic++
+        console.log(slidePic)
+    }else if(controlBox[i].name === "fwd" && slidePic < 4){
+      console.log(slidePic)
+      $('#'+projPic[slidePic-1]).toggleClass('hide');
+      $('#'+projPic[slidePic]).toggleClass('hide');
+      slidePic++
+    }else{
+      $('#'+projPic[slidePic-1]).toggleClass('hide');
+      slidePic = 0
+      console.log(slidePic)
+    };
+
   };
 
 };
@@ -709,16 +772,11 @@ for (i=0; i<lives.length; i++){
 };
 
 // display game over
-if(player.y>235){
-  lives.pop()
-  // if (lives.length >= 1){
-  //   player.x = width/2;
-  //   player.y = height-18;
-  // }else{
-  //   context.fillstyle = "Red";
-  //   Lose();
-  // }
-};
+if (lives.length === 0){
+  context.fillstyle = "Red";
+  Lose();
+}
+
 
 
 
@@ -759,9 +817,9 @@ function colCheck(shapeA, shapeB) {
 
   }
   
-easter.addEventListener('mouseover', function(){
-easter.src = "public/images/facesquare1.gif";
-});
+  easter.addEventListener('mouseover', function(){
+    easter.src = "public/images/facesquare1.gif";
+  });
 
   document.body.addEventListener("keydown", function(e) {
     keys[e.keyCode] = true;
