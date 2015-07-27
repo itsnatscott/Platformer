@@ -71,7 +71,7 @@ name:"Designist"}
 ]
 var picRay = projPic
 var slidePic = 0
-var picCounter = 0
+var picCounter = 1
 //elevator box array
 var elevator = []
 
@@ -88,6 +88,7 @@ elevator.push({
 controlBox.push({
   x:1140-200+68,
   y:600,
+  org:600,
   width:60,
   height:60,
   color:"slateGray",
@@ -98,6 +99,7 @@ controlBox.push({
 controlBox.push({
   x:200+68,
   y:600,
+  org:600,
   width:60,
   height:60,
   color:"slateGray",
@@ -670,7 +672,7 @@ for (var i = 0; i< controlBox.length; i++){
   //set counter for bump animation
   if (controlBox[i].y < 600){ctrlCounter ++};
   if (ctrlCounter === 5){
-    controlBox[i].y = 600;
+    controlBox[i].y = controlBox[i].org;
     controlBox[i].color = "slateGray"
     ctrlCounter = 0;
   };  
@@ -694,13 +696,36 @@ for (var i = 0; i< controlBox.length; i++){
 
     //fwd scroll through slides
     if(controlBox[i].name === "fwd"){
-      $("#pic").attr("src", picRay[picCounter].src);
-      if (picCounter === picRay.length - 1){
+      picCounter++;
+      if (picCounter === picRay.length){
         picCounter = 0;
+        $("#pic").attr("src", picRay[picCounter].src);
+        $("#link").attr("href", picRay[picCounter].lnk);
+        $("#link").text(picRay[picCounter].name);
       }else{
-        picCounter++;
+        $("#pic").attr("src", picRay[picCounter].src);
+        $("#link").attr("href", picRay[picCounter].lnk);
+        $("#link").text(picRay[picCounter].name);
+
+      };
+    };
+        if(controlBox[i].name === "bck"){
+      picCounter--;
+      if (picCounter < 0){
+        picCounter = picRay.length-1;
+        $("#pic").attr("src" , picRay[picCounter].src);
+        $("#link").attr("href", picRay[picCounter].lnk);
+        $("#link").text(picRay[picCounter].name);
+
+      }else{
+        $("#pic").attr("src", picRay[picCounter].src);
+        $("#link").attr("href", picRay[picCounter].lnk);
+        $("#link").text(picRay[picCounter].name);
+
+        console.log(picCounter)
       };
     }
+
 
   };
 
