@@ -161,27 +161,26 @@ boxes.push({
   width:36,
   height: 10
 });
+
 //link sign posts
 boxes.push({
-  x:1020+68,
+  x:1040+68,
   y: 365,
   width:10,
   height: 20
 });
 boxes.push({
-  x:1120+68,
+  x:1140+68,
   y: 365,
   width:10,
   height: 20
 });
 //link box
 boxes.push({
-  x:1000+68,
+  x:1020+68,
   y: 385,
   width:150,
-  height: 60,
-  color:"blue",
-  name:"lnk"
+  height: 60
 });
 
 
@@ -209,6 +208,75 @@ boxes.push({
   y: 235,
   width:36,
   height: 10
+});
+//slideshow sign posts 3
+boxes.push({
+  x:1040+68,
+  y: 245,
+  width:10,
+  height: 20
+});
+boxes.push({
+  x:1140+68,
+  y: 245,
+  width:10,
+  height: 20
+});
+//slideshow box 3
+controlBox.push({
+  x:1020+68,
+  y: 265,
+  org:265,
+  width:150,
+  height: 30,
+  color:"slateGray",
+  name:"Print"
+});
+//slideshow sign posts 2
+boxes.push({
+  x:840+68,
+  y: 245,
+  width:10,
+  height: 20
+});
+boxes.push({
+  x:940+68,
+  y: 245,
+  width:10,
+  height: 20
+});
+//slideshow box 2
+controlBox.push({
+  x:620+68,
+  y: 265,
+  org:265,
+  width:150,
+  height: 30,
+  color:"slateGray",
+  name:"Art"
+});
+//slideshow sign posts 1
+boxes.push({
+  x:740+68,
+  y: 245,
+  width:10,
+  height: 20
+});
+boxes.push({
+  x:640+68,
+  y: 245,
+  width:10,
+  height: 20
+});
+//slideshow box 1
+controlBox.push({
+  x:820+68,
+  y: 265,
+  org:265,
+  width:150,
+  height: 30,
+  color:"slateGray",
+  name:"Web Dev"
 });
 
 ///obsticle boxes
