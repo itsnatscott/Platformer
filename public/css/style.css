@@ -32,7 +32,7 @@ canvas{
 
 .car_pic{
   position:relative;
-  top:50px;
+  top: 150px;
 width:600px;
 height:auto;
 }
@@ -86,14 +86,6 @@ height:auto;
 
 .show{
   
-}
-.info{
-  background-color: rgba(200,200,200,.3);
-  width:600px;
-  height:81px;
-  position: relative;
-  bottom: 37px;
-  right: 0px;
 }
 
 #its {

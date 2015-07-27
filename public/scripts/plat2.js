@@ -51,10 +51,27 @@ var cloudBg = []
 //slideshow control button array
 var controlBox =[]
 var ctrlCounter = 0
-//array of pictures in slideshow
 
-var projPic = ["proj_pic0","proj_pic1","proj_pic2","proj_pic3"]
+
+//array for pictures in slideshow
+
+var projPic = [
+{src:"public/images/carousel/projects/ricks.jpg",
+lnk:"http://45.55.154.205:3002/",
+name:"Rick's"},
+{src:"public/images/carousel/projects/painter.jpg",
+lnk: "http://45.55.154.205:3000/",
+name:"Painter"},
+{src:"public/images/carousel/projects/refrigerator.jpg",
+lnk:"http://45.55.155.149:8080" ,
+name:"re:Fridge"},
+{src:"public/images/carousel/projects/designist.jpg",
+lnk: "http://45.55.154.205:3001/designistforum/",
+name:"Designist"}
+]
+var picRay = projPic
 var slidePic = 0
+var picCounter = 0
 //elevator box array
 var elevator = []
 
@@ -676,20 +693,14 @@ for (var i = 0; i< controlBox.length; i++){
     
 
     //fwd scroll through slides
-    if(controlBox[i].name === "fwd" && slidePic === 0){
-        $('#'+projPic[slidePic]).toggleClass('hide');
-        slidePic++
-        console.log(slidePic)
-    }else if(controlBox[i].name === "fwd" && slidePic < 4){
-      console.log(slidePic)
-      $('#'+projPic[slidePic-1]).toggleClass('hide');
-      $('#'+projPic[slidePic]).toggleClass('hide');
-      slidePic++
-    }else{
-      $('#'+projPic[slidePic-1]).toggleClass('hide');
-      slidePic = 0
-      console.log(slidePic)
-    };
+    if(controlBox[i].name === "fwd"){
+      $("#pic").attr("src", picRay[picCounter].src);
+      if (picCounter === picRay.length - 1){
+        picCounter = 0;
+      }else{
+        picCounter++;
+      };
+    }
 
   };
 
