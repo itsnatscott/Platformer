@@ -159,9 +159,12 @@ z-index: 5
 }
 
 .tag{
-  position:relative;
-  right:0px;
-  bottom:25px;
+    position: absolute;
+    right: 118px;
+    top: 385px;
+    width: 150px;
+    height: 60px;
+    z-index: 400;
 }
 
 

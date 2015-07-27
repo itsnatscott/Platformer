@@ -52,6 +52,7 @@ var cloudBg = []
 var controlBox =[]
 var ctrlCounter = 0
 //array of pictures in slideshow
+
 var projPic = ["proj_pic0","proj_pic1","proj_pic2","proj_pic3"]
 var slidePic = 0
 //elevator box array
@@ -141,6 +142,30 @@ boxes.push({
   width:36,
   height: 10
 });
+//link sign posts
+boxes.push({
+  x:1020+68,
+  y: 365,
+  width:10,
+  height: 20
+});
+boxes.push({
+  x:1120+68,
+  y: 365,
+  width:10,
+  height: 20
+});
+//link box
+boxes.push({
+  x:1000+68,
+  y: 385,
+  width:150,
+  height: 60,
+  color:"blue",
+  name:"lnk"
+});
+
+
 // rooftop
 boxes.push({
   x:590+68,
@@ -487,19 +512,6 @@ boxes.push({
   width:20,
   height:60
 })
-//point testing ladder
-// boxes.push({
-//   x:1160,
-//   y:180,
-//   width:20,
-//   height:2
-// })
-// boxes.push({
-//   x:1160,
-//   y:100,
-//   width:10,
-//   height:2
-// })
 
 //cloud
 cloud = {
@@ -660,6 +672,10 @@ for (var i = 0; i< controlBox.length; i++){
     controlBox[i].y = controlBox[i].y -3;
     controlBox[i].color = "LightSlateGray"
     player.velY *= -1;
+
+    
+
+    //fwd scroll through slides
     if(controlBox[i].name === "fwd" && slidePic === 0){
         $('#'+projPic[slidePic]).toggleClass('hide');
         slidePic++
