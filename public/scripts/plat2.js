@@ -3,7 +3,7 @@
   window.requestAnimationFrame = requestAnimationFrame;
 })();
 var easter = document.getElementById("easter")
-
+var img=document.getElementById("skin1");
 var canvas = document.getElementById("canvas"),
 context = canvas.getContext("2d"),
 width=1336,
@@ -11,14 +11,15 @@ height=900,
 player = {
   x: width/2,
   y: 221,
-  width:6,
-  height:14,
+  width:7,
+  height:15,
   speed:3,
   velX:0,
   velY:0,
   jumping: false,
   grounded: false,
-  sliding:false
+  sliding:false,
+  skin:img
 };
 keys = [],
 friction = 0.8,
@@ -68,8 +69,35 @@ name:"re:Fridge"},
 {src:"public/images/carousel/projects/designist.jpg",
 lnk: "http://45.55.154.205:3001/designistforum/",
 name:"Designist"}
+];
+
+var artPic = [
+{src:"public/images/carousel/art/elephant.jpg",
+lnk:"http://itsnatscott.com/public/images/doodle.jpg",
+name:"doodle"},
+{src:"public/images/carousel/art/dragon.jpg",
+lnk: "http://itsnatscott.com/public/images/dragon.jpg",
+name:"dragon"},
+{src:"public/images/carousel/art/supply.jpg",
+lnk:"http://itsnatscott.com/public/images/supply.jpg" ,
+name:"supply"},
+{src:"public/images/carousel/art/choice.jpg",
+lnk:"http://itsnatscott.com/public/images/choice.jpg" ,
+name:"sweets"},
+];
+
+var random = [
+{src:"public/images/carousel/random/random1.jpg",
+lnk:"http://www.google.com",
+name:"Google"},
+{src:"public/images/carousel/random/random1.jpg",
+lnk:"http://www.google.com",
+name:"Google"},
+{src:"public/images/carousel/random/random1.jpg",
+lnk:"http://www.google.com",
+name:"Google"}
 ]
-var picRay = projPic
+var picRay = random
 var slidePic = 0
 var picCounter = 1
 //elevator box array
@@ -79,33 +107,79 @@ elevator.push({
   x:85,
   y:235,
   width:68,
-  height:10,
-  dir: -1
+  height:15,
+  dir: -2
 });
 
 // set up slide show control buttons
-//right box
+//forward box
 controlBox.push({
-  x:1140-200+68,
+  x:1008,
   y:600,
   org:600,
   width:60,
   height:60,
   color:"slateGray",
-  name:"fwd"
+  name:">",
+  xName:1033,
+  yName:635,
+  yNameOrg:635
 });
 
-//left box
+//back box
 controlBox.push({
-  x:200+68,
+  x:248,
   y:600,
   org:600,
   width:60,
   height:60,
   color:"slateGray",
-  name:"bck"
+  name:"<",
+  xName:270,
+  yName:635,
+  yNameOrg:635
+});
+//slideshow box 1
+controlBox.push({
+  x:688,
+  y: 265,
+  org:265,
+  width:150,
+  height: 30,
+  color:"slateGray",
+  name:"Web",
+  xName:742,
+  yName:285,
+  yNameOrg:285
 });
 
+//slideshow box 2
+controlBox.push({
+  x:888,
+  y: 265,
+  org:265,
+  width:150,
+  height: 30,
+  color:"slateGray",
+  name:"Art",
+  xName:944,
+  yName:285,
+  yNameOrg:285
+});
+
+//slideshow box 3
+controlBox.push({
+  x:1088,
+  y: 265,
+  org:265,
+  width:150,
+  height: 30,
+  color:"slateGray",
+  name:"Print",
+  xName:1133,
+  yName:285,
+  yNameOrg:285
+});
 //life markers
 
 lives.push({
@@ -146,7 +220,7 @@ boxes.push({
 boxes.push({
   x:90+68,
   y: 355,
-  width:400,
+  width:500,
   height: 10
 });
 boxes.push({
@@ -222,16 +296,7 @@ boxes.push({
   width:10,
   height: 20
 });
-//slideshow box 3
-controlBox.push({
-  x:1020+68,
-  y: 265,
-  org:265,
-  width:150,
-  height: 30,
-  color:"slateGray",
-  name:"Print"
-});
+
 //slideshow sign posts 2
 boxes.push({
   x:840+68,
@@ -245,16 +310,7 @@ boxes.push({
   width:10,
   height: 20
 });
-//slideshow box 2
-controlBox.push({
-  x:620+68,
-  y: 265,
-  org:265,
-  width:150,
-  height: 30,
-  color:"slateGray",
-  name:"Art"
-});
+
 //slideshow sign posts 1
 boxes.push({
   x:740+68,
@@ -267,16 +323,6 @@ boxes.push({
   y: 245,
   width:10,
   height: 20
-});
-//slideshow box 1
-controlBox.push({
-  x:820+68,
-  y: 265,
-  org:265,
-  width:150,
-  height: 30,
-  color:"slateGray",
-  name:"Web Dev"
 });
 
 ///obsticle boxes
@@ -712,10 +758,10 @@ for (var i = 0; i < boxes.length; i++) {
 context.fillRect(elevator[0].x,elevator[0].y,elevator[0].width,elevator[0].height);
 elevator[0].y = elevator[0].y + elevator[0].dir
 if(elevator[0].y >= 750){
-  elevator[0].dir = -1
+  elevator[0].dir = -2
 }
 if(elevator[0].y <= 235){
-  elevator[0].dir = 1
+  elevator[0].dir = 2
 }
 var dir = colCheck(player, elevator[0]);
 if (dir === "l" || dir === "r"){
@@ -729,7 +775,7 @@ else if (dir === "t" && player.y <= 743) {
   player.velY *= -1;
 } 
 else if (dir === "t" && player.y === 747) {
-  elevator[0].dir = -1
+  elevator[0].dir = -2
   Reset();
 };
 
@@ -738,9 +784,10 @@ else if (dir === "t" && player.y === 747) {
 
 for (var i = 0; i< controlBox.length; i++){
   //set counter for bump animation
-  if (controlBox[i].y < 600){ctrlCounter ++};
+  if (controlBox[i].y < controlBox[i].org){ctrlCounter ++};
   if (ctrlCounter === 5){
     controlBox[i].y = controlBox[i].org;
+    controlBox[i].yName = controlBox[i].yNameOrg
     controlBox[i].color = "slateGray"
     ctrlCounter = 0;
   };  
@@ -748,6 +795,9 @@ for (var i = 0; i< controlBox.length; i++){
   //draw control boxes to canvas and attach collision
   context.fillStyle = controlBox[i].color
   context.fillRect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
+  context.fillStyle = "DarkGray"
+  context.font = "bold 20px courier"
+  context.fillText(controlBox[i].name,controlBox[i].xName,controlBox[i].yName)
   var dir = colCheck(player, controlBox[i]);
   if (dir === "l" || dir === "r"){
     player.velX = 0;
@@ -757,13 +807,26 @@ for (var i = 0; i< controlBox.length; i++){
     player.jumping = false;
   } else if (dir === "t") {
     controlBox[i].y = controlBox[i].y -3;
-    controlBox[i].color = "LightSlateGray"
+    controlBox[i].yName = controlBox[i].yName -3;
+    controlBox[i].color = "LightSlateGray";
     player.velY *= -1;
+
+    //pick a slide show
+    if(controlBox[i].name === "Web"){
+        picCounter = 1;
+        picRay = projPic;
+        console.log ("picRay = projPic")
+    }
+        if(controlBox[i].name === "Art"){
+        picCounter = 1;
+        picRay = artPic;
+        console.log ("picRay = artPic")
+    }
 
     
 
     //fwd scroll through slides
-    if(controlBox[i].name === "fwd"){
+    if(controlBox[i].name === ">"){
       picCounter++;
       if (picCounter === picRay.length){
         picCounter = 0;
@@ -777,7 +840,7 @@ for (var i = 0; i< controlBox.length; i++){
 
       };
     };
-        if(controlBox[i].name === "bck"){
+        if(controlBox[i].name === "<"){
       picCounter--;
       if (picCounter < 0){
         picCounter = picRay.length-1;
@@ -880,8 +943,9 @@ if(points>0){
 
 
 // player block
-context.fillStyle = "red";
-context.fillRect(player.x, player.y, player.width, player.height);
+// context.fillStyle = "red";
+// context.fillRect(player.x, player.y, player.width, player.height);
+context.drawImage(player.skin,player.x, player.y, player.width, player.height)
 //moving box/player interaction
 if(player.x >= cloud.x-15 && player.x <= cloud.x+15 && player.y <= cloud.y && player.y >= cloud.y-14){
   player.x = player.x + 1
