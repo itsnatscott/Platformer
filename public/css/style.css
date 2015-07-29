@@ -11,7 +11,13 @@ body{
   overflow-y:hidden;
   margin: 0;
 }
-
+#bubble{
+    position: fixed;
+    left: 1312px;
+    top: 161px;
+    width: 100px;
+    z-index: 400;
+}
 canvas{
   left: 100px;
   position: fixed;
@@ -24,6 +30,8 @@ canvas{
   width: 1344px;
   height: 550px;
   background-color: DarkGray;
+  
+
   position: fixed;
   top: 235px;
   text-align: center;
@@ -31,8 +39,11 @@ canvas{
 }
 
 .car_pic{
+ /* background-image: url(../images/flicker.png);*/
+  background-blend-mode:multiply;
   position:relative;
   top: 150px;
+  left: -13px;
   width:600px;
   height:auto;
 }
@@ -85,7 +96,7 @@ canvas{
 }
 
 .show{
-
+  display:inherit;
 }
 
 #its {

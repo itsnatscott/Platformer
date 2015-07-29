@@ -9,7 +9,7 @@ context = canvas.getContext("2d"),
 width=1336,
 height=900,
 player = {
-  x: width/2,
+  x: 1320,
   y: 221,
   width:7,
   height:15,
@@ -19,7 +19,8 @@ player = {
   jumping: false,
   grounded: false,
   sliding:false,
-  skin:img
+  skin:img,
+  dead:0
 };
 keys = [],
 friction = 0.8,
@@ -30,8 +31,9 @@ canvas.height = height;
 // write on canvas
 var points = 0
 var lives = []
+
 Reset = function(){
-  player.x = width/2;
+  player.x = 1320;
   player.y = 221;
   lives.pop();
 }
@@ -43,6 +45,12 @@ Score = function(){
 Lose = function(){
   context.font = "bold 20px courier"
   context.fillText("GAME OVER",1153+68,221)
+}
+Die = function(){
+  player.dead++
+  context.fillStyle = "Red";
+  context.font = "bold 20px courier"
+  context.fillText("you died",1153+68,221)
 }
 
 //obsticle boxes
@@ -72,7 +80,7 @@ name:"Designist"}
 ];
 
 var artPic = [
-{src:"public/images/carousel/art/elephant.jpg",
+{src:"public/images/carousel/art/doodle.jpg",
 lnk:"http://itsnatscott.com/public/images/doodle.jpg",
 name:"doodle"},
 {src:"public/images/carousel/art/dragon.jpg",
@@ -82,24 +90,26 @@ name:"dragon"},
 lnk:"http://itsnatscott.com/public/images/supply.jpg" ,
 name:"supply"},
 {src:"public/images/carousel/art/choice.jpg",
-lnk:"http://itsnatscott.com/public/images/choice.jpg" ,
+lnk:"http://itsnatscott.com/public/images/cshigh.jpg" ,
 name:"sweets"},
 ];
 
 var random = [
-{src:"public/images/carousel/random/random1.jpg",
+{src:"public/images/carousel/random/random.gif",
 lnk:"http://www.google.com",
 name:"Google"},
-{src:"public/images/carousel/random/random1.jpg",
+{src:"public/images/carousel/random/random.gif",
 lnk:"http://www.google.com",
 name:"Google"},
-{src:"public/images/carousel/random/random1.jpg",
+{src:"public/images/carousel/random/random.gif",
 lnk:"http://www.google.com",
 name:"Google"}
 ]
 var picRay = random
 var slidePic = 0
 var picCounter = 1
+
+
 //elevator box array
 var elevator = []
 
@@ -108,8 +118,21 @@ elevator.push({
   y:235,
   width:68,
   height:15,
-  dir: -2
+  dir: -2,
+  yStart:235,
+  yEnd:750
 });
+
+elevator.push({
+  x:1265,
+  y:355,
+  width:28,
+  height:15,
+  dir: -2,
+  yStart:355,
+  yEnd:750
+});
+
 
 // set up slide show control buttons
 //forward box
@@ -120,6 +143,8 @@ controlBox.push({
   width:60,
   height:60,
   color:"slateGray",
+  color2:"slateGray",
+  colorO:"slateGray",
   name:">",
   xName:1033,
   yName:635,
@@ -134,6 +159,8 @@ controlBox.push({
   width:60,
   height:60,
   color:"slateGray",
+  color2:"slateGray",
+  active:false,
   name:"<",
   xName:270,
   yName:635,
@@ -147,6 +174,8 @@ controlBox.push({
   width:150,
   height: 30,
   color:"slateGray",
+  color2:"white",
+  active:false,
   name:"Web",
   xName:742,
   yName:285,
@@ -161,6 +190,8 @@ controlBox.push({
   width:150,
   height: 30,
   color:"slateGray",
+  color2:"white",
+  active:false,
   name:"Art",
   xName:944,
   yName:285,
@@ -175,6 +206,8 @@ controlBox.push({
   width:150,
   height: 30,
   color:"slateGray",
+  color2:"white",
+  active:false,
   name:"Print",
   xName:1133,
   yName:285,
@@ -236,7 +269,7 @@ boxes.push({
   height: 10
 });
 
-//link sign posts
+//link box sign posts
 boxes.push({
   x:1040+68,
   y: 365,
@@ -684,8 +717,23 @@ cloudBg.push({
   height:2
 });
 
+//////////////////////////////////////////////////////////
 //game loop
 function update(){
+//run instructions function
+if (player.x===1320 && player.y==221){
+  $("#bubble").attr("src", "public/images/bubble.gif")
+}
+  //pause after dying
+
+
+  if(player.dead>=90){
+    player.dead=0
+  }
+
+  if(player.dead > 0){
+    player.dead++
+  }
 
   //moving cloud platform & cloudBg
   if (cloud.x < width){
@@ -755,29 +803,37 @@ for (var i = 0; i < boxes.length; i++) {
   }
 }
 //draw elevator
-context.fillRect(elevator[0].x,elevator[0].y,elevator[0].width,elevator[0].height);
-elevator[0].y = elevator[0].y + elevator[0].dir
-if(elevator[0].y >= 750){
-  elevator[0].dir = -2
-}
-if(elevator[0].y <= 235){
-  elevator[0].dir = 2
-}
-var dir = colCheck(player, elevator[0]);
-if (dir === "l" || dir === "r"){
-  player.velX = 0;
-  player.jumping = false;
-}else if (dir === "b"){
-  player.grounded = true;
-  player.jumping = false;
-} 
-else if (dir === "t" && player.y <= 743) {
-  player.velY *= -1;
-} 
-else if (dir === "t" && player.y === 747) {
-  elevator[0].dir = -2
-  Reset();
-};
+for (i=0; i<elevator.length; i++)
+  {context.fillRect(elevator[i].x,elevator[i].y,elevator[i].width,elevator[i].height);
+    elevator[i].y = elevator[i].y + elevator[i].dir
+    if(elevator[i].y >= elevator[i].yEnd){
+      elevator[i].dir = -2
+    }
+    if(elevator[i].y <= elevator[i].yStart){
+      elevator[i].dir = 2
+    }
+    var dir = colCheck(player, elevator[i]);
+    if (dir === "l" || dir === "r"){
+      player.velX = 0;
+      player.jumping = false;
+    }else if (dir === "b"){
+      player.grounded = true;
+      player.jumping = false;
+    } 
+    else if (dir === "t" && player.y <= 738) {
+      console.log(player.y)
+      player.velY *= -2;
+    } 
+    else if (dir === "t" && player.y === 742) {
+      elevator[i].dir = -2;
+      console.log("crushed...dead? " + player.dead)
+      player.x = 1320;
+      player.y = 221;
+      player.dead++
+      lives.pop()
+      console.log(player.x)
+    };
+  };
 
 
 //draw control boxes
@@ -787,13 +843,16 @@ for (var i = 0; i< controlBox.length; i++){
   if (controlBox[i].y < controlBox[i].org){ctrlCounter ++};
   if (ctrlCounter === 5){
     controlBox[i].y = controlBox[i].org;
-    controlBox[i].yName = controlBox[i].yNameOrg
-    controlBox[i].color = "slateGray"
+    controlBox[i].yName = controlBox[i].yNameOrg;
     ctrlCounter = 0;
   };  
 
   //draw control boxes to canvas and attach collision
-  context.fillStyle = controlBox[i].color
+  if (controlBox[i].active === false){
+    context.fillStyle = controlBox[i].color
+  }else{
+    context.fillStyle = controlBox[i].color2
+  }
   context.fillRect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
   context.fillStyle = "DarkGray"
   context.font = "bold 20px courier"
@@ -813,14 +872,29 @@ for (var i = 0; i< controlBox.length; i++){
 
     //pick a slide show
     if(controlBox[i].name === "Web"){
-        picCounter = 1;
-        picRay = projPic;
-        console.log ("picRay = projPic")
+      $("#pic").attr("src", "public/images/carousel/random/random2.gif");
+      controlBox[i].active = true
+      controlBox[3].active = false
+      controlBox[4].active = false
+      picCounter = 1;
+      picRay = projPic;
     }
-        if(controlBox[i].name === "Art"){
-        picCounter = 1;
-        picRay = artPic;
-        console.log ("picRay = artPic")
+    if(controlBox[i].name === "Art"){
+      $("#pic").attr("src", "public/images/carousel/random/random2.gif");
+      controlBox[i].active = true
+      controlBox[2].active = false
+      controlBox[4].active = false
+      picCounter = 1;
+      picRay = artPic;
+    }
+
+    if(controlBox[i].name === "Print"){
+      $("#pic").attr("src", "public/images/carousel/random/random2.gif");
+      controlBox[i].active = true
+      controlBox[2].active = false
+      controlBox[3].active = false
+      picCounter = 1;
+      picRay = artPic;
     }
 
     
@@ -840,7 +914,7 @@ for (var i = 0; i< controlBox.length; i++){
 
       };
     };
-        if(controlBox[i].name === "<"){
+    if(controlBox[i].name === "<"){
       picCounter--;
       if (picCounter < 0){
         picCounter = picRay.length-1;
@@ -945,7 +1019,11 @@ if(points>0){
 // player block
 // context.fillStyle = "red";
 // context.fillRect(player.x, player.y, player.width, player.height);
-context.drawImage(player.skin,player.x, player.y, player.width, player.height)
+//put skin on players
+if(player.dead === 0){
+  context.drawImage(player.skin,player.x, player.y, player.width, player.height)
+}else{Die();}
+
 //moving box/player interaction
 if(player.x >= cloud.x-15 && player.x <= cloud.x+15 && player.y <= cloud.y && player.y >= cloud.y-14){
   player.x = player.x + 1
