@@ -5,7 +5,11 @@
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
 }
-
+#back{
+    position: fixed;
+    top: 584px;
+    left: 326px;
+}
 
 body{
   overflow-y:hidden;
@@ -17,6 +21,15 @@ body{
     top: 161px;
     width: 100px;
     z-index: 400;
+}
+#bottom{
+    position: fixed;
+    top: 774px;
+    left: 0px;
+    background-color: white;
+    height: 200px;
+    width: 1500px;
+    z-index: 500;
 }
 canvas{
   left: 100px;
@@ -77,6 +90,7 @@ canvas{
 
 #easter{
   position: fixed;
+  left: 0px;
   top: 325px;
   width: 100px;
   height: 125px;
@@ -91,12 +105,17 @@ canvas{
   left: 100px;
   z-index: 100
 }
+.gamebg{
+  background-image:url(../images/easy/rainbow.jpg); 
+  width: 1340px;
+  height: 235px;
+  position: fixed;
+  top: 0px;
+  left: 100px;
+  z-index: 100
+}
 .hide{
   display:none;
-}
-
-.show{
-  display:inherit;
 }
 
 #its {
@@ -107,17 +126,6 @@ canvas{
   font-family: 'Niconne', cursive;
   color: rgb(94,110,126);
   z-index: 202;
-}
-
-.sect{
-  position:absolute;
-  top: 267px;
-  text-align: center;
-  display: inline-block;
-  font-family: courier;
-  font-size: 14pt;
-
-  z-index: 415
 }
 #web{
   left: 756px;
@@ -148,18 +156,22 @@ li{   display: inline-block;
   z-index: 5
 }
 
-
-
-#art_li{
-  visibility: hidden;
+.mouseless{
+  cursor: none;
 }
 
-#print_li{
-  visibility: hidden;
+#right{
+    position: fixed;
+    top: 0px;
+    left: 1436px;
+    background-color: white;
+    height: 1000px;
+    width: 200px;
+    z-index: 500;
 }
 
-#link_li{
-  visibility: hidden;
+.show{
+  display:inherit;
 }
 
 .sidebar{
@@ -172,17 +184,100 @@ li{   display: inline-block;
 }
 
 #tag{
-  text-align: center;
-  position: absolute;
-  right: 98px;
-  top: 400px;
-  width: 150px;
-  height: 60px;
-  z-index: 400;
+    text-align: center;
+    position: absolute;
+    left: 1188px;
+    top: 400px;
+    width: 150px;
+    height: 60px;
+    z-index: 400;
+}
+
+
+#easyButt{
+position: fixed;
+    top: 40px;
+    left: 13px;
+    z-index: 600;}
+
+
+#easyButtons{
+}
+
+
+
+.easybox{
+    display: inline-block;
+    position: relative;
+    left: 277px;
+  top: 196px;
+    width: 120px;
+    height: 60px;
+    font-family: courier;
+    font-size: 12pt;
+    background-image: url(../images/easy/x.svg);
+    background-size: contain;
+    z-index: 500;
+    margin-right: -3px;
+}
+.easybox2{
+    position: relative;
+    left: 562px;
+    top: 221px;
+    width: 120px;
+    height: 60px;
+    font-family: courier;
+    font-size: 12pt;
+    background-image: url(../images/easy/x.svg);
+    background-size: contain;
+    z-index: 500;
+    display: -webkit-inline-box;
+    /* margin-left: 20px; */
+    margin-right: 76px;
+}
+.linkeasy{
+    text-align: center;
+    top: 20px;
+    position: relative;
+}
+.easyarrow{
+    background-image: url(../images/easy/x2.svg);
+    background-size: contain;
+    width: 100px;
+    height: 100px;
+    z-index: 500;
+}
+#forward{
+    position: fixed;
+    top: 579px;
+    left: 1089px;
+}
+
+#easyslideLink{
+    position: fixed;
+    top: 345px;
+    left: 1140px;
+    width: 240px;
+    height: 120px;
 }
 #link{
   font-family: courier;
   font-size:16pt;
+}
+.sect{
+  position:absolute;
+  top: 267px;
+  text-align: center;
+  display: inline-block;
+  font-family: courier;
+  font-size: 14pt;
+
+  z-index: 415
+}
+
+.show{
+      position: relative;
+    left: 42px;
 }
 
 

@@ -24,7 +24,7 @@ player = {
 };
 keys = [],
 friction = 0.8,
-gravity = 0.2;
+gravity = 0.15;
 
 canvas.width = width;
 canvas.height = height;
@@ -35,7 +35,6 @@ var lives = []
 Reset = function(){
   player.x = 1320;
   player.y = 221;
-  lives.pop();
 }
 Score = function(){
   context.fillStyle = "slateGray";
@@ -79,6 +78,32 @@ lnk: "http://45.55.154.205:3001/designistforum/",
 name:"Designist"}
 ];
 
+var adPic = [
+{src:"public/images/carousel/ads/punch.jpg",
+lnk:"http://itsnatscott.com/public/images/punch.jpg",
+name:"punch"},
+{src:"public/images/carousel/ads/ramen.jpg",
+lnk:"http://itsnatscott.com/public/images/ramen.jpg",
+name:"ramen"},
+{src:"public/images/carousel/ads/lucha.gif",
+lnk:"http://itsnatscott.com/public/images/lucha.gif",
+name:"lucha"},
+{src:"public/images/carousel/ads/diamond.jpg",
+lnk:"http://itsnatscott.com/public/images/diamond.jpg",
+name:"diamond"},
+{src:"public/images/carousel/ads/chinatown.jpg",
+lnk:"http://itsnatscott.com/public/images/chinatown.jpg",
+name:"chinatown"},
+{src:"public/images/carousel/ads/99.jpg",
+lnk:"http://itsnatscott.com/public/images/99.jpg",
+name:"99"},
+{src:"public/images/carousel/ads/web.gif",
+lnk:"http://itsnatscott.com/public/images/web.gif",
+name:"web awards"},
+
+
+]
+
 var artPic = [
 {src:"public/images/carousel/art/doodle.jpg",
 lnk:"http://itsnatscott.com/public/images/doodle.jpg",
@@ -92,6 +117,21 @@ name:"supply"},
 {src:"public/images/carousel/art/choice.jpg",
 lnk:"http://itsnatscott.com/public/images/cshigh.jpg" ,
 name:"sweets"},
+{src:"public/images/carousel/art/lab.jpg",
+lnk:"http://itsnatscott.com/public/images/lab.jpg" ,
+name:"lab"},
+{src:"public/images/carousel/art/duck.jpg",
+lnk:"http://itsnatscott.com/public/images/duck.jpg" ,
+name:"duck"},
+{src:"public/images/carousel/art/meal.jpg",
+lnk:"http://itsnatscott.com/public/images/meal.jpg" ,
+name:"meal"},
+{src:"public/images/carousel/art/train.gif",
+lnk:"http://itsnatscott.com/public/images/train.gif" ,
+name:"train"},
+{src:"public/images/carousel/art/sadfishat.jpg",
+lnk:"http://itsnatscott.com/public/images/sadfishat.jpg" ,
+name:"sadfishat"}
 ];
 
 var random = [
@@ -148,7 +188,8 @@ controlBox.push({
   name:">",
   xName:1033,
   yName:635,
-  yNameOrg:635
+  yNameOrg:635,
+  font:"bold 20px courier"
 });
 
 //back box
@@ -160,11 +201,13 @@ controlBox.push({
   height:60,
   color:"slateGray",
   color2:"slateGray",
+  colorO:"slateGray",
   active:false,
   name:"<",
   xName:270,
   yName:635,
-  yNameOrg:635
+  yNameOrg:635,
+  font:"bold 20px courier"
 });
 //slideshow box 1
 controlBox.push({
@@ -175,11 +218,13 @@ controlBox.push({
   height: 30,
   color:"slateGray",
   color2:"white",
+  colorO:"slateGray",
   active:false,
   name:"Web",
   xName:742,
   yName:285,
-  yNameOrg:285
+  yNameOrg:285,
+  font:"bold 20px courier"
 });
 
 //slideshow box 2
@@ -191,11 +236,13 @@ controlBox.push({
   height: 30,
   color:"slateGray",
   color2:"white",
+  colorO:"slateGray",
   active:false,
   name:"Art",
   xName:944,
   yName:285,
-  yNameOrg:285
+  yNameOrg:285,
+  font:"bold 20px courier"
 });
 
 //slideshow box 3
@@ -207,11 +254,52 @@ controlBox.push({
   height: 30,
   color:"slateGray",
   color2:"white",
+  colorO:"slateGray",
   active:false,
-  name:"Print",
-  xName:1133,
+  name:"Ads",
+  xName:1143,
   yName:285,
-  yNameOrg:285
+  yNameOrg:285,
+  font:"bold 20px courier"
+});
+
+//external link box
+controlBox.push({
+  x:188,
+  y: 255,
+  org:255,
+  width:100,
+  height: 20,
+  type: "link",
+  color:"slateGray",
+  color2:"slateGray",
+  colorO:"slateGray",
+  active:false,
+  name:"linkedIn",
+  xName:200,
+  yName:269,
+  yNameOrg:269,
+  font:"bold 16px courier",
+  url: "http://www.linkedin.com/in/brewsterscott"
+});
+
+controlBox.push({
+  x:308,
+  y: 255,
+  org:255,
+  width:100,
+  height: 20,
+  type: "link",
+  color:"slateGray",
+  color2:"slateGray",
+  colorO:"slateGray",
+  active:false,
+  name:"gitHub",
+  xName:329,
+  yName:269,
+  yNameOrg:269,
+  font:"bold 16px courier",
+  url: "http://www.github.com/itsnatscott?tab=repositories"
 });
 //life markers
 
@@ -236,14 +324,14 @@ lives.push({
   height:7
 });
 
-//Bottom floor
+//Bottom floor///////////////////////////////
 boxes.push({
   x:0,
   y: 750,
   width:width,
   height: 50
 });
-// second floor
+// second floor//////////////////////////////
 boxes.push({
   x:590+68,
   y: 355,
@@ -282,7 +370,8 @@ boxes.push({
   width:10,
   height: 20
 });
-//link box
+
+//slide show link box
 boxes.push({
   x:1020+68,
   y: 385,
@@ -291,7 +380,7 @@ boxes.push({
 });
 
 
-// rooftop
+// rooftop////////////////////////////////
 boxes.push({
   x:590+68,
   y: 235,
@@ -315,6 +404,20 @@ boxes.push({
   y: 235,
   width:36,
   height: 10
+});
+// external link sign posts
+boxes.push({
+  x:235,
+  y: 245,
+  width:5,
+  height: 20
+});
+
+boxes.push({
+  x:355,
+  y: 245,
+  width:5,
+  height: 20
 });
 //slideshow sign posts 3
 boxes.push({
@@ -720,6 +823,10 @@ cloudBg.push({
 //////////////////////////////////////////////////////////
 //game loop
 function update(){
+$(window).blur(function() {
+  console.log("blur");
+  Reset;
+});
 //run instructions function
 if (player.x===1320 && player.y==221){
   $("#bubble").attr("src", "public/images/bubble.gif")
@@ -844,6 +951,7 @@ for (var i = 0; i< controlBox.length; i++){
   if (ctrlCounter === 5){
     controlBox[i].y = controlBox[i].org;
     controlBox[i].yName = controlBox[i].yNameOrg;
+    controlBox[i].color = controlBox[i].colorO;
     ctrlCounter = 0;
   };  
 
@@ -854,9 +962,9 @@ for (var i = 0; i< controlBox.length; i++){
     context.fillStyle = controlBox[i].color2
   }
   context.fillRect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
-  context.fillStyle = "DarkGray"
-  context.font = "bold 20px courier"
-  context.fillText(controlBox[i].name,controlBox[i].xName,controlBox[i].yName)
+  context.fillStyle = "DarkGray";
+  context.font = controlBox[i].font;
+  context.fillText(controlBox[i].name,controlBox[i].xName,controlBox[i].yName);
   var dir = colCheck(player, controlBox[i]);
   if (dir === "l" || dir === "r"){
     player.velX = 0;
@@ -869,6 +977,15 @@ for (var i = 0; i< controlBox.length; i++){
     controlBox[i].yName = controlBox[i].yName -3;
     controlBox[i].color = "LightSlateGray";
     player.velY *= -1;
+
+    //open link
+    if(controlBox[i].type === "link"){
+      player.jumping=false;
+      // Reset();
+    window.open(controlBox[i].url)
+    focus();
+
+    }
 
     //pick a slide show
     if(controlBox[i].name === "Web"){
@@ -888,13 +1005,13 @@ for (var i = 0; i< controlBox.length; i++){
       picRay = artPic;
     }
 
-    if(controlBox[i].name === "Print"){
+    if(controlBox[i].name === "Ads"){
       $("#pic").attr("src", "public/images/carousel/random/random2.gif");
       controlBox[i].active = true
       controlBox[2].active = false
       controlBox[3].active = false
       picCounter = 1;
-      picRay = artPic;
+      picRay = adPic;
     }
 
     
@@ -1005,7 +1122,7 @@ line = {
 context.fillRect(line.x,line.y,line.width,line.height);
 var pt = colCheck(player,line);
 if (pt === "b"){
-  player.y = player.y+5
+  player.y = player.y+9
   points = points+1
 }
 
@@ -1078,6 +1195,12 @@ function colCheck(shapeA, shapeB) {
     return colDir;
 
   }
+  $("#easyButt").click(function(){
+    $("#easyButtons").toggleClass('hide');
+    $("#gamebg").toggleClass('gamebg');
+    $('canvas').toggleClass('mouseless')
+
+  });
   
   easter.addEventListener('mouseover', function(){
     easter.src = "public/images/facesquare1.gif";
@@ -1094,9 +1217,3 @@ function colCheck(shapeA, shapeB) {
   window.addEventListener("load",function(){
     update();
   });
-
-
-
-
-
-  // $('#proj_pic1').toggleClass('hide')
