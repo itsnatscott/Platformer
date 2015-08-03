@@ -28,10 +28,22 @@ gravity = 0.15;
 
 canvas.width = width;
 canvas.height = height;
-// write on canvas
+var Jump = function(){
+  if(!player.jumping && player.grounded){
+   player.jumping = true;
+   player.grounded = false;
+   player.velY = -player.speed*1.5;
+   player.velX *= friction;
+   player.x += player.velX;
+   player.y += player.velY;
+ }
+}
+var extlink = ""
 var points = 0
 var lives = []
-
+var game = {
+  mode:"hard"
+}
 Reset = function(){
   player.x = 1320;
   player.y = 221;
@@ -50,6 +62,25 @@ Die = function(){
   context.fillStyle = "Red";
   context.font = "bold 20px courier"
   context.fillText("you died",1153+68,221)
+}
+
+OpenLink = function(){
+  setTimeout(function(){
+   window.open(extLink)
+ },300);
+
+}
+
+MouseFollow = function(){
+  if (game.mode === "hard"){
+  }else{ $(document).mousemove(function (e) {
+     var xOffset = e.pageX;
+     var yOffset = e.pageY;
+     player.x = xOffset-100
+     $('body').click(function(){
+      Jump()
+    });
+   });}
 }
 
 //obsticle boxes
@@ -301,6 +332,28 @@ controlBox.push({
   font:"bold 16px courier",
   url: "http://www.github.com/itsnatscott?tab=repositories"
 });
+
+///slideShow linkbox
+controlBox.push({
+  x:1020+68,
+  y: 385,
+  org:255,
+  width:150,
+  height: 60,
+  type: "link",
+  color:"slateGray",
+  color2:"slateGray",
+  colorO:"slateGray",
+  active:false,
+  name:"",
+  xName:329,
+  yName:269,
+  yNameOrg:269,
+  font:"bold 16px courier",
+  url: ""
+});
+
+
 //life markers
 
 lives.push({
@@ -372,12 +425,6 @@ boxes.push({
 });
 
 //slide show link box
-boxes.push({
-  x:1020+68,
-  y: 385,
-  width:150,
-  height: 60
-});
 
 
 // rooftop////////////////////////////////
@@ -823,12 +870,12 @@ cloudBg.push({
 //////////////////////////////////////////////////////////
 //game loop
 function update(){
-$(window).blur(function() {
-  console.log("blur");
-  Reset;
-});
+  if(game.mode === "easy"){
+    MouseFollow();
+  };
+
 //run instructions function
-if (player.x===1320 && player.y==221){
+if (player.x===1320 && player.y===221){
   $("#bubble").attr("src", "public/images/bubble.gif")
 }
   //pause after dying
@@ -862,6 +909,8 @@ if (player.x===1320 && player.y==221){
          player.jumping = true;
          player.grounded = false;
          player.velY = -player.speed*2;
+         player.velX *= friction;
+         console.log("key38")
        }
      }
      if (keys[39]) {
@@ -877,22 +926,32 @@ if (player.x===1320 && player.y==221){
         }
       }
 
-      player.velX *= friction;
-
-      player.velY += gravity;
-
-
-      if (player.x >= width-player.width){
-        player.x = 0;
-      }else if (player.x <= 0){
-        player.x = width-player.width;
-      }    
+      if (keys[40]) {         
+        // down arrow         
+        if(player.jumping && !player.grounded){
+         player.jumping = false;
+         player.grounded = true;
+         player.velY = +player.speed*1;
+       }
+     };
 
 
-      context.clearRect(0,0,width,height);
-      context.fillStyle = "slateGray";
-      context.beginPath();
-      player.grounded = false;
+     player.velX *= friction;
+
+     player.velY += gravity;
+
+
+     if (player.x >= width-player.width){
+      player.x = 0;
+    }else if (player.x <= 0){
+      player.x = width-player.width;
+    }    
+
+
+    context.clearRect(0,0,width,height);
+    context.fillStyle = "slateGray";
+    // context.beginPath();
+    player.grounded = false;
 
 //draw dark gray boxes and attach collision
 for (var i = 0; i < boxes.length; i++) {
@@ -928,17 +987,14 @@ for (i=0; i<elevator.length; i++)
       player.jumping = false;
     } 
     else if (dir === "t" && player.y <= 738) {
-      console.log(player.y)
       player.velY *= -2;
     } 
     else if (dir === "t" && player.y === 742) {
       elevator[i].dir = -2;
-      console.log("crushed...dead? " + player.dead)
       player.x = 1320;
       player.y = 221;
       player.dead++
       lives.pop()
-      console.log(player.x)
     };
   };
 
@@ -972,7 +1028,7 @@ for (var i = 0; i< controlBox.length; i++){
   }else if (dir === "b"){
     player.grounded = true;
     player.jumping = false;
-  } else if (dir === "t") {
+  } else if (dir === "t" && player.jumping === true) {
     controlBox[i].y = controlBox[i].y -3;
     controlBox[i].yName = controlBox[i].yName -3;
     controlBox[i].color = "LightSlateGray";
@@ -981,9 +1037,8 @@ for (var i = 0; i< controlBox.length; i++){
     //open link
     if(controlBox[i].type === "link"){
       player.jumping=false;
-      // Reset();
-    window.open(controlBox[i].url)
-    focus();
+      extLink = (controlBox[i].url)
+      OpenLink()
 
     }
 
@@ -996,6 +1051,7 @@ for (var i = 0; i< controlBox.length; i++){
       picCounter = 1;
       picRay = projPic;
     }
+
     if(controlBox[i].name === "Art"){
       $("#pic").attr("src", "public/images/carousel/random/random2.gif");
       controlBox[i].active = true
@@ -1044,7 +1100,6 @@ for (var i = 0; i< controlBox.length; i++){
         $("#link").attr("href", picRay[picCounter].lnk);
         $("#link").text(picRay[picCounter].name);
 
-        console.log(picCounter)
       };
     }
 
@@ -1162,7 +1217,7 @@ if (lives.length === 0){
 
 requestAnimationFrame(update);
 }
-
+///////check collision
 function colCheck(shapeA, shapeB) {
   var vX = (shapeA.x + (shapeA.width/2)) - (shapeB.x + (shapeB.width/2)),
   vY =(shapeA.y + (shapeA.height/2))-(shapeB.y + (shapeB.height/2)),
@@ -1195,25 +1250,89 @@ function colCheck(shapeA, shapeB) {
     return colDir;
 
   }
-  $("#easyButt").click(function(){
-    $("#easyButtons").toggleClass('hide');
-    $("#gamebg").toggleClass('gamebg');
-    $('canvas').toggleClass('mouseless')
 
-  });
-  
-  easter.addEventListener('mouseover', function(){
-    easter.src = "public/images/facesquare1.gif";
-  });
+  $('#easy').click(function(){
+    Reset();
+    if(game.mode==="hard"){
+      game.mode = "easy"
+      $('#mode').html("<b>Easy Mode<br></b>use the mouse to navigate")
+    }else{game.mode = "hard"
+    $('#mode').html("<b>Hard Mode<br></b>use the arrow keys to navigate")
+  };
+  $('#easy').toggleClass('hardToggle')
+  $("#easyButtons").toggleClass('hide');
+  $("#gamebg").toggleClass('gamebg');
+  $(".carousel").toggleClass('wallpaper');
+  $('canvas').toggleClass('mouseless')
+});
 
-  document.body.addEventListener("keydown", function(e) {
-    keys[e.keyCode] = true;
-  });
+    ///////////////////////////easy mode
+    $('#artShow').click(function(){
+      console.log('clicked')
+      controlBox[3].active = true
+      controlBox[2].active = false
+      controlBox[4].active = false
+      picCounter = 1;
+      picRay = artPic;
+      $("#pic").attr("src", picRay[picCounter].src);
+      $("#easyLink").attr("href", picRay[picCounter].lnk);
+      $("#easyLink").text(picRay[picCounter].name);
+    });
+    $('#adsShow').click(function(){
+      console.log('clicked')
+      controlBox[4].active = true
+      controlBox[2].active = false
+      controlBox[3].active = false
+      picCounter = 1;
+      picRay = adPic;
+      $("#pic").attr("src", picRay[picCounter].src);
+      $("#easyLink").attr("href", picRay[picCounter].lnk);
+      $("#easyLink").text(picRay[picCounter].name);
+    });
+    $('#webShow').click(function(){
+      console.log('clicked')
+      controlBox[2].active = true
+      controlBox[4].active = false
+      controlBox[3].active = false
+      picCounter = 1;
+      picRay = projPic;
+      $("#pic").attr("src", picRay[picCounter].src);
+      $("#easyLink").attr("href", picRay[picCounter].lnk);
+      $("#easyLink").text(picRay[picCounter].name);
+    });
 
-  document.body.addEventListener("keyup", function(e) {
-    keys[e.keyCode] = false;
-  });
+      ///////////////////////////easy slide directional buttons
+      $('#forward').click(function(){
+        picCounter++;
+        if (picCounter === picRay.length){
+          picCounter = 0;
+        }
+        $("#pic").attr("src", picRay[picCounter].src);
+        $("#easyLink").attr("href", picRay[picCounter].lnk);
+        $("#easyLink").text(picRay[picCounter].name);
+      });
 
-  window.addEventListener("load",function(){
-    update();
-  });
+      $('#back').click(function(){
+        picCounter--;
+        if (picCounter < 0){
+          picCounter = picRay.length-1;
+        }
+        $("#pic").attr("src" , picRay[picCounter].src);
+        $("#easyLink").attr("href", picRay[picCounter].lnk);
+        $("#easyLink").text(picRay[picCounter].name);
+
+
+      });
+
+
+      document.body.addEventListener("keydown", function(e) {
+        keys[e.keyCode] = true;
+      });
+
+      document.body.addEventListener("keyup", function(e) {
+        keys[e.keyCode] = false;
+      });
+
+      window.addEventListener("load",function(){
+        update();
+      });

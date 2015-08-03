@@ -5,6 +5,12 @@
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
 }
+.arrow{
+      position: relative;
+    top: 17px;
+    left: 31px;
+    cursor: pointer;
+}
 #back{
     position: fixed;
     top: 584px;
@@ -38,21 +44,29 @@ canvas{
   top: 0;
 }
 
-#carousel{
+.carousel{
   left: 100px;
   width: 1344px;
   height: 550px;
   background-color: DarkGray;
-  
-
-  position: fixed;
+ position: fixed;
+  top: 235px;
+  text-align: center;
+  z-index: -5
+}
+.wallpaper{
+    left: 100px;
+  width: 1344px;
+  height: 550px;
+  background-image: url(../images/easy/wallpaper.jpg);
+ position: fixed;
   top: 235px;
   text-align: center;
   z-index: -5
 }
 
 .car_pic{
- /* background-image: url(../images/flicker.png);*/
+ /* background-image: ;*/
   background-blend-mode:multiply;
   position:relative;
   top: 150px;
@@ -88,13 +102,29 @@ canvas{
   to {left: 1436px;}
 }
 
-#easter{
+#easy{
   position: fixed;
   left: 0px;
   top: 325px;
   width: 100px;
   height: 125px;
   z-index: 206
+}
+.easyToggle{
+  background-image:url(../images/easy/easy.gif);
+}
+.hardToggle{
+  background-image:url(../images/easy/hard.gif);
+}
+#easyButtons {
+    position: relative;
+    top: -20px;
+}
+#easyLink{
+      position: relative;
+    top: 58px;
+    left: 94px;
+    text-align: center;
 }
 #gamebg{
   background-color: LightSkyBlue;
@@ -106,7 +136,8 @@ canvas{
   z-index: 100
 }
 .gamebg{
-  background-image:url(../images/easy/rainbow.jpg); 
+  background-image:url(../images/easy/rainbow.jpg);
+  background-color: LightSkyBlue;
   width: 1340px;
   height: 235px;
   position: fixed;
@@ -127,15 +158,6 @@ canvas{
   color: rgb(94,110,126);
   z-index: 202;
 }
-#web{
-  left: 756px;
-}
-#art{
-  left: 1005px;
-}
-#print{
-  left: 1172px;
-}
 
 
 li{   display: inline-block;
@@ -155,6 +177,16 @@ li{   display: inline-block;
   height: 600px;
   z-index: 5
 }
+#mode{
+    color: DarkGray;
+    position: relative;
+    top: -45px;
+    left: 89px;
+    font-family: courier;
+    margin-top: 0px;
+    width: 350px;
+    text-align: center;
+}
 
 .mouseless{
   cursor: none;
@@ -170,9 +202,6 @@ li{   display: inline-block;
     z-index: 500;
 }
 
-.show{
-  display:inherit;
-}
 
 .sidebar{
 	background-image:url(../images/sidebar.jpg);
@@ -223,7 +252,7 @@ position: fixed;
 .easybox2{
     position: relative;
     left: 562px;
-    top: 221px;
+    top: 232px;
     width: 120px;
     height: 60px;
     font-family: courier;
@@ -232,7 +261,6 @@ position: fixed;
     background-size: contain;
     z-index: 500;
     display: -webkit-inline-box;
-    /* margin-left: 20px; */
     margin-right: 76px;
 }
 .linkeasy{
@@ -249,7 +277,7 @@ position: fixed;
 }
 #forward{
     position: fixed;
-    top: 579px;
+    top: 584px;
     left: 1089px;
 }
 
@@ -271,18 +299,21 @@ position: fixed;
   display: inline-block;
   font-family: courier;
   font-size: 14pt;
-
-  z-index: 415
+  z-index: 415;
 }
 
 .show{
-      position: relative;
-    left: 42px;
+    text-align: center;
+    position: relative;
+    width: 100px;
+    left: 13px;
+    cursor: pointer;
+
 }
 
 
 ul
-{         text-align: center;
+{ text-align: center;
   display: inline-block;
   font-family: 'Niconne', cursive;
   font-size: 25pt;
