@@ -72,15 +72,15 @@ OpenLink = function(){
 }
 
 MouseFollow = function(){
-  if (game.mode === "hard"){
-  }else{ $(document).mousemove(function (e) {
+  console.log("mousefollow")
+$('#mousetrack').mousemove(function (e) {
      var xOffset = e.pageX;
      var yOffset = e.pageY;
      player.x = xOffset-100
      $('body').click(function(){
       Jump()
     });
-   });}
+   });
 }
 
 //obsticle boxes
@@ -871,9 +871,11 @@ cloudBg.push({
 //game loop
 function update(){
   if(game.mode === "easy"){
+    console.log("turning on MouseFollow")
     MouseFollow();
-  };
+  }
 
+context.clearRect(0,0,width,height);
 //run instructions function
 if (player.x===1320 && player.y===221){
   $("#bubble").attr("src", "public/images/bubble.gif")
@@ -948,9 +950,9 @@ if (player.x===1320 && player.y===221){
     }    
 
 
-    context.clearRect(0,0,width,height);
+
     context.fillStyle = "slateGray";
-    // context.beginPath();
+    context.beginPath();
     player.grounded = false;
 
 //draw dark gray boxes and attach collision
@@ -1252,7 +1254,7 @@ function colCheck(shapeA, shapeB) {
   }
 
   $('#easy').click(function(){
-    Reset();
+    console.log("mode is : "+ game.mode)
     if(game.mode==="hard"){
       game.mode = "easy"
       $('#mode').html("<b>Easy Mode<br></b>use the mouse to navigate")
@@ -1263,7 +1265,8 @@ function colCheck(shapeA, shapeB) {
   $("#easyButtons").toggleClass('hide');
   $("#gamebg").toggleClass('gamebg');
   $(".carousel").toggleClass('wallpaper');
-  $('canvas').toggleClass('mouseless')
+  $('canvas').toggleClass('mouseless');
+  $('#mousetrack').toggleClass('gone');
 });
 
     ///////////////////////////easy mode
@@ -1323,6 +1326,7 @@ function colCheck(shapeA, shapeB) {
 
 
       });
+
 
 
       document.body.addEventListener("keydown", function(e) {

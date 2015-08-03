@@ -191,6 +191,17 @@ li{   display: inline-block;
 .mouseless{
   cursor: none;
 }
+.gone{
+display:none;
+}
+#mousetrack{
+  left: 100px;
+  position: fixed;
+  z-index: 205;
+  top: 0;
+  width:1336px;
+  height:900px;
+}
 
 #right{
     position: fixed;
