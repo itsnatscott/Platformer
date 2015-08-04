@@ -2,7 +2,6 @@
   var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
   window.requestAnimationFrame = requestAnimationFrame;
 })();
-var easter = document.getElementById("easter")
 var img=document.getElementById("skin1");
 var canvas = document.getElementById("canvas"),
 context = canvas.getContext("2d"),
@@ -72,11 +71,15 @@ OpenLink = function(){
 }
 
 MouseFollow = function(){
-  console.log("mousefollow")
 $('#mousetrack').mousemove(function (e) {
      var xOffset = e.pageX;
      var yOffset = e.pageY;
      player.x = xOffset-100
+     if(yOffset <= 355 && yOffset > 255 && player.jumping === false){
+      player.y=350
+     }else if(yOffset <= 255 && player.jumping === false){
+      player.y=230
+     }
      $('body').click(function(){
       Jump()
     });
@@ -167,14 +170,14 @@ name:"sadfishat"}
 
 var random = [
 {src:"public/images/carousel/random/random.gif",
-lnk:"http://www.google.com",
-name:"Google"},
+lnk:"",
+name:""},
 {src:"public/images/carousel/random/random.gif",
-lnk:"http://www.google.com",
-name:"Google"},
+lnk:"",
+name:""},
 {src:"public/images/carousel/random/random.gif",
-lnk:"http://www.google.com",
-name:"Google"}
+lnk:"",
+name:""}
 ]
 var picRay = random
 var slidePic = 0
@@ -335,9 +338,9 @@ controlBox.push({
 
 ///slideShow linkbox
 controlBox.push({
-  x:1020+68,
-  y: 385,
-  org:255,
+  x:1020+68, 
+  y: 385, 
+  org:385,
   width:150,
   height: 60,
   type: "link",
@@ -345,11 +348,11 @@ controlBox.push({
   color2:"slateGray",
   colorO:"slateGray",
   active:false,
-  name:"",
-  xName:329,
-  yName:269,
-  yNameOrg:269,
-  font:"bold 16px courier",
+  name:"Link",
+  xName:1133,
+  yName:420,
+  yNameOrg:420,
+  font:"bold 24px courier",
   url: ""
 });
 
@@ -466,6 +469,14 @@ boxes.push({
   width:5,
   height: 20
 });
+
+boxes.push({
+  x:1088,
+  y: 495,
+  width:150,
+  height: 10
+});
+
 //slideshow sign posts 3
 boxes.push({
   x:1040+68,
@@ -871,7 +882,6 @@ cloudBg.push({
 //game loop
 function update(){
   if(game.mode === "easy"){
-    console.log("turning on MouseFollow")
     MouseFollow();
   }
 
@@ -1021,6 +1031,8 @@ for (var i = 0; i< controlBox.length; i++){
   }
   context.fillRect(controlBox[i].x,controlBox[i].y,controlBox[i].width,controlBox[i].height);
   context.fillStyle = "DarkGray";
+
+  ////////put type on control boxes
   context.font = controlBox[i].font;
   context.fillText(controlBox[i].name,controlBox[i].xName,controlBox[i].yName);
   var dir = colCheck(player, controlBox[i]);
@@ -1030,14 +1042,14 @@ for (var i = 0; i< controlBox.length; i++){
   }else if (dir === "b"){
     player.grounded = true;
     player.jumping = false;
-  } else if (dir === "t" && player.jumping === true) {
+  } else if (dir === "t" && player.jumping === true && game.mode === "hard") {
     controlBox[i].y = controlBox[i].y -3;
     controlBox[i].yName = controlBox[i].yName -3;
     controlBox[i].color = "LightSlateGray";
     player.velY *= -1;
 
     //open link
-    if(controlBox[i].type === "link"){
+    if(controlBox[i].type === "link" && controlBox[i].url != ""){
       player.jumping=false;
       extLink = (controlBox[i].url)
       OpenLink()
@@ -1046,30 +1058,38 @@ for (var i = 0; i< controlBox.length; i++){
 
     //pick a slide show
     if(controlBox[i].name === "Web"){
-      $("#pic").attr("src", "public/images/carousel/random/random2.gif");
+      $("#pic").attr("src", "public/images/carousel/random/about.gif");
       controlBox[i].active = true
       controlBox[3].active = false
       controlBox[4].active = false
       picCounter = 1;
       picRay = projPic;
+      $("#pic").attr("src", picRay[picCounter].src);
+      controlBox[7].url = (picRay[picCounter].lnk);
+      $("#link").text(picRay[picCounter].name);
     }
 
     if(controlBox[i].name === "Art"){
-      $("#pic").attr("src", "public/images/carousel/random/random2.gif");
+      $("#pic").attr("src", "public/images/carousel/random/about.gif");
       controlBox[i].active = true
       controlBox[2].active = false
       controlBox[4].active = false
       picCounter = 1;
       picRay = artPic;
+      $("#pic").attr("src", picRay[picCounter].src);
+      controlBox[7].url = (picRay[picCounter].lnk);
+      $("#link").text(picRay[picCounter].name);
     }
 
     if(controlBox[i].name === "Ads"){
-      $("#pic").attr("src", "public/images/carousel/random/random2.gif");
       controlBox[i].active = true
       controlBox[2].active = false
       controlBox[3].active = false
       picCounter = 1;
       picRay = adPic;
+      $("#pic").attr("src", picRay[picCounter].src);
+      controlBox[7].url = (picRay[picCounter].lnk);
+      $("#link").text(picRay[picCounter].name);
     }
 
     
@@ -1078,32 +1098,20 @@ for (var i = 0; i< controlBox.length; i++){
     if(controlBox[i].name === ">"){
       picCounter++;
       if (picCounter === picRay.length){
-        picCounter = 0;
+        picCounter = 0;}
         $("#pic").attr("src", picRay[picCounter].src);
-        $("#link").attr("href", picRay[picCounter].lnk);
+        controlBox[7].url = (picRay[picCounter].lnk);
         $("#link").text(picRay[picCounter].name);
-      }else{
-        $("#pic").attr("src", picRay[picCounter].src);
-        $("#link").attr("href", picRay[picCounter].lnk);
-        $("#link").text(picRay[picCounter].name);
-
-      };
     };
     if(controlBox[i].name === "<"){
       picCounter--;
       if (picCounter < 0){
-        picCounter = picRay.length-1;
+        picCounter = picRay.length-1;}
         $("#pic").attr("src" , picRay[picCounter].src);
-        $("#link").attr("href", picRay[picCounter].lnk);
+        controlBox[7].url = (picRay[picCounter].lnk);
         $("#link").text(picRay[picCounter].name);
 
-      }else{
-        $("#pic").attr("src", picRay[picCounter].src);
-        $("#link").attr("href", picRay[picCounter].lnk);
-        $("#link").text(picRay[picCounter].name);
-
-      };
-    }
+      }
 
 
   };
@@ -1252,9 +1260,8 @@ function colCheck(shapeA, shapeB) {
     return colDir;
 
   }
-
+///show easy mode 
   $('#easy').click(function(){
-    console.log("mode is : "+ game.mode)
     if(game.mode==="hard"){
       game.mode = "easy"
       $('#mode').html("<b>Easy Mode<br></b>use the mouse to navigate")
@@ -1325,6 +1332,13 @@ function colCheck(shapeA, shapeB) {
         $("#easyLink").text(picRay[picCounter].name);
 
 
+      });
+
+      ///show mega fauna
+      $('#megaTog').click(function(){
+        imgUrl="/public/images/megafona.gif"
+        $('#megafauna').toggleClass('hide')
+        $('#megaTog').toggleClass('megafaunaToggleOff megafaunaToggleOn');
       });
 
 
