@@ -2,11 +2,16 @@
   var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
   window.requestAnimationFrame = requestAnimationFrame;
 })();
-var img=document.getElementById("skin1");
+var playerImg=document.getElementById("skin1");
+var crateImg=document.getElementById("crate");
+var baddyLImg =document.getElementById("baddyL")
+var baddyRImg =document.getElementById("baddyR")
 var canvas = document.getElementById("canvas"),
 context = canvas.getContext("2d"),
 width=1336,
 height=900,
+
+
 player = {
   x: 1320,
   y: 221,
@@ -18,15 +23,80 @@ player = {
   jumping: false,
   grounded: false,
   sliding:false,
-  skin:img,
-  dead:0
+  skin:playerImg,
+  dead:0,
+  onTiger:false
 };
+
+badGuy = {
+  x: 0,
+  y: 738,
+  width:24,
+  height:12,
+  speed:3,
+  velX:3,
+  velY:1,
+  dir:"R",
+  jump: 0,
+  grounded: false,
+  sliding:false,
+  skin:baddyRImg,
+  skinL:baddyLImg,
+  skinR:baddyRImg,
+  dead:false
+}
+
+crate = {
+  x: 1100,
+  y: 215,
+  velY:3,
+  width:25,
+  height:25,
+  grounded:true,
+  skin: crateImg
+};
+
+
+
+meat = {}
+
 keys = [],
 friction = 0.8,
 gravity = 0.15;
 
 canvas.width = width;
 canvas.height = height;
+var Crate = function()
+{ 
+
+
+context.drawImage(crate.skin, crate.x,crate.y,crate.width,crate.height)
+  
+// push the crate
+  var dir = colCheck(player, crate);
+  if (dir === "l"){
+    crate.x = crate.x+ player.velX
+    player.jumping = false;
+
+  }else if(dir ==="r"){
+    crate.x = crate.x+ player.velX
+    player.jumping = false;
+        console.log(player.velX)
+  }else if (dir === "b"){
+    player.grounded = true;
+    player.jumping = false;
+    player.velY = 0
+  } else if (dir === "t") {
+    player.velY *= -1;
+  }
+
+       if (crate.x > width){
+      crate.x = 0;
+    }else if (crate.x < 0){
+      crate.x = width-crate.width;
+    } 
+  crate.y += crate.velY;
+}
 var Jump = function(){
   if(!player.jumping && player.grounded){
    player.jumping = true;
@@ -41,11 +111,13 @@ var extlink = ""
 var points = 0
 var lives = []
 var game = {
-  mode:"hard"
+  mode:"hard",
+  over:"false"
 }
 Reset = function(){
   player.x = 1320;
   player.y = 221;
+  lives.pop();
 }
 Score = function(){
   context.fillStyle = "slateGray";
@@ -53,7 +125,9 @@ Score = function(){
   context.fillText(points,1120+68,185);
 }
 Lose = function(){
+  context.fillStyle = "Red";
   context.font = "bold 20px courier"
+  game.over = true
   context.fillText("GAME OVER",1153+68,221)
 }
 Die = function(){
@@ -71,20 +145,21 @@ OpenLink = function(){
 }
 
 MouseFollow = function(){
-$('#mousetrack').mousemove(function (e) {
-     var xOffset = e.pageX;
-     var yOffset = e.pageY;
-     player.x = xOffset-100
-     if(yOffset <= 355 && yOffset > 255 && player.jumping === false){
-      player.y=350
-     }else if(yOffset <= 255 && player.jumping === false){
-      player.y=230
-     }
-     $('body').click(function(){
-      Jump()
-    });
-   });
+  $('#mousetrack').mousemove(function (e) {
+   var xOffset = e.pageX;
+   var yOffset = e.pageY;
+   player.x = xOffset-100
+   if(yOffset <= 355 && yOffset > 255 && player.jumping === false){
+    player.y=350
+  }else if(yOffset <= 255 && player.jumping === false){
+    player.y=230
+  }
+  $('body').click(function(){
+    Jump()
+  });
+});
 }
+
 
 //obsticle boxes
 var boxes = []
@@ -186,7 +261,6 @@ var picCounter = 1
 
 //elevator box array
 var elevator = []
-
 elevator.push({
   x:85,
   y:235,
@@ -194,7 +268,8 @@ elevator.push({
   height:15,
   dir: -2,
   yStart:235,
-  yEnd:750
+  yEnd:748,
+  timer:0
 });
 
 elevator.push({
@@ -204,7 +279,8 @@ elevator.push({
   height:15,
   dir: -2,
   yStart:355,
-  yEnd:750
+  yEnd:748,
+  timer:0
 });
 
 
@@ -389,15 +465,9 @@ boxes.push({
 });
 // second floor//////////////////////////////
 boxes.push({
-  x:590+68,
-  y: 355,
-  width:600,
-  height: 10
-});
-boxes.push({
   x:90+68,
   y: 355,
-  width:500,
+  width:1100,
   height: 10
 });
 boxes.push({
@@ -881,20 +951,26 @@ cloudBg.push({
 //////////////////////////////////////////////////////////
 //game loop
 function update(){
-  if(game.mode === "easy"){
-    MouseFollow();
+  if(player.grounded === true){
+    player.y=player.y
   }
 
-context.clearRect(0,0,width,height);
+  if(player.onTiger === true && player.jumping === false){
+    player.x = badGuy.x+12;
+    player.velY = 0;
+  };
+
+  context.clearRect(0,0,width,height);
 //run instructions function
 if (player.x===1320 && player.y===221){
   $("#bubble").attr("src", "public/images/bubble.gif")
 }
   //pause after dying
-
+Crate();
 
   if(player.dead>=90){
     player.dead=0
+    Reset();
   }
 
   if(player.dead > 0){
@@ -922,7 +998,6 @@ if (player.x===1320 && player.y===221){
          player.grounded = false;
          player.velY = -player.speed*2;
          player.velX *= friction;
-         console.log("key38")
        }
      }
      if (keys[39]) {
@@ -943,7 +1018,7 @@ if (player.x===1320 && player.y===221){
         if(player.jumping && !player.grounded){
          player.jumping = false;
          player.grounded = true;
-         player.velY = +player.speed*1;
+         player.velY = +player.speed*3;
        }
      };
 
@@ -969,6 +1044,7 @@ if (player.x===1320 && player.y===221){
 for (var i = 0; i < boxes.length; i++) {
   context.fillStyle = "slateGray";
   context.fillRect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+  //player
   var dir = colCheck(player, boxes[i]);
   if (dir === "l" || dir === "r"){
     player.velX = 0;
@@ -979,36 +1055,23 @@ for (var i = 0; i < boxes.length; i++) {
   } else if (dir === "t") {
     player.velY *= -1;
   }
+
+  //crate
+    // crate vs obsticle boxes
+    var dir1 = colCheck(crate, boxes[i]);
+  if (dir1 === "l" || dir1 === "r"){
+    player.velX = 0;
+    player.jumping = false;
+  }else if (dir1 === "b"){
+    crate.grounded = true;
+    crate.y = crate.y-.5
+  } else if (dir1 === "t") {
+    crate.grounded = false
+  }
+
+
 }
-//draw elevator
-for (i=0; i<elevator.length; i++)
-  {context.fillRect(elevator[i].x,elevator[i].y,elevator[i].width,elevator[i].height);
-    elevator[i].y = elevator[i].y + elevator[i].dir
-    if(elevator[i].y >= elevator[i].yEnd){
-      elevator[i].dir = -2
-    }
-    if(elevator[i].y <= elevator[i].yStart){
-      elevator[i].dir = 2
-    }
-    var dir = colCheck(player, elevator[i]);
-    if (dir === "l" || dir === "r"){
-      player.velX = 0;
-      player.jumping = false;
-    }else if (dir === "b"){
-      player.grounded = true;
-      player.jumping = false;
-    } 
-    else if (dir === "t" && player.y <= 738) {
-      player.velY *= -2;
-    } 
-    else if (dir === "t" && player.y === 742) {
-      elevator[i].dir = -2;
-      player.x = 1320;
-      player.y = 221;
-      player.dead++
-      lives.pop()
-    };
-  };
+
 
 
 //draw control boxes
@@ -1102,25 +1165,25 @@ for (var i = 0; i< controlBox.length; i++){
         $("#pic").attr("src", picRay[picCounter].src);
         controlBox[7].url = (picRay[picCounter].lnk);
         $("#link").text(picRay[picCounter].name);
+      };
+      if(controlBox[i].name === "<"){
+        picCounter--;
+        if (picCounter < 0){
+          picCounter = picRay.length-1;}
+          $("#pic").attr("src" , picRay[picCounter].src);
+          controlBox[7].url = (picRay[picCounter].lnk);
+          $("#link").text(picRay[picCounter].name);
+
+        }
+
+
+      };
+
     };
-    if(controlBox[i].name === "<"){
-      picCounter--;
-      if (picCounter < 0){
-        picCounter = picRay.length-1;}
-        $("#pic").attr("src" , picRay[picCounter].src);
-        controlBox[7].url = (picRay[picCounter].lnk);
-        $("#link").text(picRay[picCounter].name);
+    player.x += player.velX;
+    player.y += player.velY;
 
-      }
-
-
-  };
-
-};
-player.x += player.velX;
-player.y += player.velY;
-
-context.fill();
+    context.fill();
 
 
 //draw cloud
@@ -1133,6 +1196,7 @@ if (dir === "l" || dir === "r"){
 }else if (dir === "b"){
   player.grounded = true;
   player.jumping = false;
+  player.x = player.x+1
 } else if (dir === "t") {
   player.velY *= -1;
 };
@@ -1196,23 +1260,154 @@ if(points>0){
   Score();
 }
 
+///////////////////////////draw BAD GUY block & attach collision
+if(badGuy.dead === false){
+  if (badGuy.jump === 122){
+    badGuy.jump = 0;
+  }
 
+  /////Tiger Leap
+  if(badGuy.jump>=80 && badGuy.jump<=100){
+    badGuy.x= badGuy.x + badGuy.velX*2;
+    badGuy.y= badGuy.y - 2
+    badGuy.jump = badGuy.jump+1
+  }else if(badGuy.jump>100 && badGuy.jump <=121){
+    badGuy.x= badGuy.x + badGuy.velX*2;
+    badGuy.y= badGuy.y + 2
+    badGuy.jump = badGuy.jump +1
+  }else{
+    badGuy.x= badGuy.x + badGuy.velX;
+    badGuy.jump = badGuy.jump + 1
+  }
 
+  if(badGuy.x > 1320){
+    badGuy.dir = "L"
+  }
+  if(badGuy.x < -13){
+    badGuy.dir = "R"
+
+  }
+  if(badGuy.dir === "R"){
+    badGuy.skin = badGuy.skinR
+    badGuy.velX = 3
+  }else{
+    badGuy.skin = badGuy.skinL
+    badGuy.velX = -3
+    console.log
+  };
+  
+  context.drawImage(badGuy.skin, badGuy.x, badGuy.y, badGuy.width, badGuy.height)
+  var dir = colCheck(player,badGuy);
+  if ( dir === "l" || dir === "r"){
+    if(game.mode === "hard" && player.onTiger === false){
+      player.jumping = false;
+      Die();
+    }
+  }else if (dir === "b"){
+    player.grounded = true;
+    player.jumping = false;
+
+  } else if (dir === "t") {
+    if(game.mode === "hard"){
+      player.velY *= -1;
+      Die();
+    };
+  };
+
+//Block Badguy collision
+var dir2 = colCheck(crate,badGuy);
+  if ( dir2 === "l"){
+    badGuy.dir = "L"
+  }else if (dir2 === "r"){
+    badGuy.dir = "R"
+
+  } else if (dir2 === "t") {
+  console.log("dead tiger")
+  };
+
+};
 // player block
 // context.fillStyle = "red";
 // context.fillRect(player.x, player.y, player.width, player.height);
 //put skin on players
-if(player.dead === 0){
-  context.drawImage(player.skin,player.x, player.y, player.width, player.height)
-}else{Die();}
 
+if (game.over === true){
+  Lose();
+}else if(player.dead === 0){
+  context.drawImage(player.skin,player.x, player.y, player.width, player.height) 
+}else{
+  Die();
+}
+  /////tigerride!
+  if(player.x >= badGuy.x && player.x <= badGuy.x+24 && player.y < badGuy.y-3 && player.y >= badGuy.y-18){
+    player.onTiger = true;
+    player.grounded = true;
+    player.x = badGuy.x ;
+    player.velY = badGuy.velY;
+  }else{
+    player.onTiger = false;
+  }
 //moving box/player interaction
 if(player.x >= cloud.x-15 && player.x <= cloud.x+15 && player.y <= cloud.y && player.y >= cloud.y-14){
   player.x = player.x + 1
 };
+
+
 // display lives
 for (i=0; i<lives.length; i++){
+  context.fillStyle = "Red";
   context.fillRect(lives[i].x,lives[i].y,lives[i].width,lives[i].height)
+};
+
+context.fillStyle = "slateGray";
+//draw elevator
+for (i=0; i<elevator.length; i++)
+  {
+    context.fillRect(elevator[i].x,elevator[i].y,elevator[i].width,elevator[i].height);
+    elevator[i].y = elevator[i].y + elevator[i].dir
+    
+
+    if(elevator[i].y >= elevator[i].yEnd && elevator[i].timer<70){
+      elevator[i].dir=0;
+      elevator[i].timer = elevator[i].timer+1
+    }else if (elevator[i].y >= elevator[i].yEnd && elevator[i].timer===70){
+      elevator[i].dir= -2;
+      elevator[i].timer = 0
+    };
+
+
+
+    if(elevator[i].y <= elevator[i].yStart){
+      elevator[i].dir = 2
+    }
+    var dir = colCheck(player, elevator[i]);
+    if (dir === "l" || dir === "r"){
+      player.velX = 0;
+      player.jumping = false;
+    }else if (dir === "b"){
+      player.grounded = true;
+      player.velY = elevator[i].dir
+      player.jumping = false;
+    } 
+    else if (dir === "t" && player.y <= 738) {
+      player.velY *= gravity;
+    } 
+    else if (dir === "t" && player.y === 742) {
+      elevator[i].dir = -2;
+      player.x = 1320;
+      player.y = 221;
+      player.dead = 1
+    };
+    var dir1 = colCheck(player, elevator[i]);
+    if (dir1 === "l" || dir1 === "r"){
+      badGuy.velX = 0;
+    }else if (dir1 === "b"){
+      badGuy.grounded = true;
+      badGuy.velY = elevator[i].dir
+    }
+    else if (dir1 === "t") {
+      elevator[i].dir = -2;
+  };
 };
 
 // display game over
@@ -1261,24 +1456,23 @@ function colCheck(shapeA, shapeB) {
 
   }
 ///show easy mode 
-  $('#easy').click(function(){
-    if(game.mode==="hard"){
-      game.mode = "easy"
-      $('#mode').html("<b>Easy Mode<br></b>use the mouse to navigate")
-    }else{game.mode = "hard"
-    $('#mode').html("<b>Hard Mode<br></b>use the arrow keys to navigate")
-  };
-  $('#easy').toggleClass('hardToggle')
-  $("#easyButtons").toggleClass('hide');
-  $("#gamebg").toggleClass('gamebg');
-  $(".carousel").toggleClass('wallpaper');
-  $('canvas').toggleClass('mouseless');
-  $('#mousetrack').toggleClass('gone');
+$('#easy').click(function(){
+  if(game.mode==="hard"){
+    game.mode = "easy"
+    $('#mode').html("<b>Easy Mode<br></b>use the mouse to navigate")
+  }else{game.mode = "hard"
+  $('#mode').html("<b>Hard Mode<br></b>use the arrow keys to navigate")
+};
+$('#easy').toggleClass('hardToggle')
+$("#easyButtons").toggleClass('hide');
+$("#gamebg").toggleClass('gamebg');
+$(".carousel").toggleClass('wallpaper');
+$('canvas').toggleClass('mouseless');
+$('#mousetrack').toggleClass('gone');
 });
 
     ///////////////////////////easy mode
     $('#artShow').click(function(){
-      console.log('clicked')
       controlBox[3].active = true
       controlBox[2].active = false
       controlBox[4].active = false
@@ -1289,7 +1483,6 @@ function colCheck(shapeA, shapeB) {
       $("#easyLink").text(picRay[picCounter].name);
     });
     $('#adsShow').click(function(){
-      console.log('clicked')
       controlBox[4].active = true
       controlBox[2].active = false
       controlBox[3].active = false
@@ -1300,7 +1493,6 @@ function colCheck(shapeA, shapeB) {
       $("#easyLink").text(picRay[picCounter].name);
     });
     $('#webShow').click(function(){
-      console.log('clicked')
       controlBox[2].active = true
       controlBox[4].active = false
       controlBox[3].active = false
@@ -1341,16 +1533,20 @@ function colCheck(shapeA, shapeB) {
         $('#megaTog').toggleClass('megafaunaToggleOff megafaunaToggleOn');
       });
 
+      ///hard mode alert 
+      if(game.mode === "hard"){$('canvas').click(function(){
+        alert("HARD MODE ACTIVE. \nUse the ARROW KEYS to move the player around \nUse UP or SPACE to jump  \nOR toggle to EASY MODE with the switch on the left")
+      })}
 
 
-      document.body.addEventListener("keydown", function(e) {
-        keys[e.keyCode] = true;
-      });
+        document.body.addEventListener("keydown", function(e) {
+          keys[e.keyCode] = true;
+        });
 
-      document.body.addEventListener("keyup", function(e) {
-        keys[e.keyCode] = false;
-      });
+        document.body.addEventListener("keyup", function(e) {
+          keys[e.keyCode] = false;
+        });
 
-      window.addEventListener("load",function(){
-        update();
-      });
+        window.addEventListener("load",function(){
+          update();
+        });

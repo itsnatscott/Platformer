@@ -33,7 +33,7 @@ body{
   top: 774px;
   left: 0px;
   background-color: white;
-  height: 200px;
+  height: 300px;
   width: 1500px;
   z-index: 500;
 }
@@ -66,8 +66,9 @@ canvas{
 }
 
 .car_pic{
-  background-image: url(../images/carousel/random/about.gif), url(../images/flicker.gif);
+ background-image: url(../images/carousel/random/about.gif), url(../images/flicker.gif);
  background-blend-mode:multiply;
+ background-size: contain;
  position:relative;
  top: 150px;
  left: -16px;
@@ -120,7 +121,6 @@ canvas{
 #easyButt{
   position: fixed;
   top: 40px;
-  left: 13px;
   z-index: 600;}
 
 
@@ -245,7 +245,7 @@ li{   display: inline-block;
 }
 
 .mouseless{
-  cursor: none;
+/*  cursor: none;*/
 }
 .gone{
   display:none;
@@ -277,6 +277,14 @@ li{   display: inline-block;
     height: 150px;
     left: 1062px;
     top: 455px;
+}
+
+#npc2{
+    z-index: 300;
+    left: 300px;
+    top: 217px;
+    position: relative;
+    width: 100px;
 }
 
 #right{
