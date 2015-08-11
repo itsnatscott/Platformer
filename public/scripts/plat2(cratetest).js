@@ -4,9 +4,10 @@
 })();
 var playerImg=document.getElementById("skin1");
 var crateImg=document.getElementById("crate");
-var baddyLImg =document.getElementById("baddyL")
-var baddyRImg =document.getElementById("baddyR")
-var canvas = document.getElementById("canvas"),
+var signImg=document.getElementById("crateSign");
+var baddyLImg =document.getElementById("baddyL");
+var baddyRImg =document.getElementById("baddyR");
+var canvas = document.getElementById("canvas");
 context = canvas.getContext("2d"),
 width=1336,
 height=900,
@@ -38,6 +39,7 @@ badGuy = {
   velY:1,
   dir:"R",
   jump: 0,
+  jumping: false,
   grounded: false,
   sliding:false,
   skin:baddyRImg,
@@ -45,10 +47,17 @@ badGuy = {
   skinR:baddyRImg,
   dead:false
 }
+keys = [],
+friction = 0.8,
+gravity = 0.15;
+
+canvas.width = width;
+canvas.height = height;
+var crates =[]
 
 crate = {
-  x: 1100,
-  y: 215,
+  x: 490,
+  y: 0,
   velY:3,
   width:25,
   height:25,
@@ -56,47 +65,116 @@ crate = {
   skin: crateImg
 };
 
+///crate generator
+sign = {
+  x:468,
+  y:215,
+  width:16,
+  height:22,
+  skin:signImg
+}
+crateButt ={
+  x:458,
+  y:230,
+  width:14,
+  height:11,
+  pressed:false,
+  color:"DarkGray"
+}
 
-
-meat = {}
-
-keys = [],
-friction = 0.8,
-gravity = 0.15;
-
-canvas.width = width;
-canvas.height = height;
-var Crate = function()
-{ 
-
-
-context.drawImage(crate.skin, crate.x,crate.y,crate.width,crate.height)
-  
-// push the crate
-  var dir = colCheck(player, crate);
-  if (dir === "l"){
-    crate.x = crate.x+ player.velX
-    player.jumping = false;
-
-  }else if(dir ==="r"){
-    crate.x = crate.x+ player.velX
-    player.jumping = false;
-        console.log(player.velX)
-  }else if (dir === "b"){
+///draw crate making apparatus
+Apparatus = function(){
+  context.drawImage(sign.skin, sign.x,sign.y,sign.width,sign.height)
+  context.fillStyle = crateButt.color
+  if (crateButt.pressed === true){
+    crateButt.height = 10;
+    crateButt.y= crateButt.y+1;
+    crateButt.color = "Red"
+    if (crateButt.y === 235){
+        setTimeout(function(){
+          for (i=0;i<1;i++) {
+             crates.push(crate);}
+     },500);
+        crateButt.pressed=false
+      };
+    };
+   var dir = colCheck(player, crateButt);
+   if (dir === "b"){
     player.grounded = true;
     player.jumping = false;
-    player.velY = 0
-  } else if (dir === "t") {
-    player.velY *= -1;
-  }
-
-       if (crate.x > width){
-      crate.x = 0;
-    }else if (crate.x < 0){
-      crate.x = width-crate.width;
-    } 
-  crate.y += crate.velY;
+    player.velY = 0;
+    crateButt.pressed = true;
+    console.log(crateButt.pressed)
+  }else{
+    crateButt.pressed=false}
+context.fillRect( crateButt.x,crateButt.y,crateButt.width,crateButt.height)
 }
+
+
+
+var Crate = function(){ 
+// for (i=0; i<crates.length; i++){
+//   context.drawImage(crates[i].skin, crates[i].x,crates[i].y,crates[i].width,crates[i].height)
+  
+// // push the crate
+//   var dir = colCheck(player, crates[i]);
+//   if (dir === "l"){
+//     crates[i].x = crates[i].x+ player.velX
+//     player.jumping = false;
+
+//   }else if(dir ==="r"){
+//     crates[i].x = crates[i].x+ player.velX
+//     player.jumping = false;
+//         console.log(player.velX)
+//   }else if (dir === "b"){
+//     player.grounded = true;
+//     player.jumping = false;
+//     player.velY = 0
+//   } else if (dir === "t") {
+//     player.velY *= -1;
+//   }
+
+//       if (crates[i].x > width){
+//       crates[i].x = 0;
+//     }else if (crates[i].x < 0){
+//       crates[i].x = width-crates[i].width;
+//     } 
+//   crates[i].y += crates[i].velY;}
+
+// //     // crate vs obsticle boxes
+//     var dir1 = colCheck(crates[i], boxes[i]);
+//   if (dir1 === "l" || dir1 === "r"){
+//     player.velX = 0;
+//     player.jumping = false;
+//   }else if (dir1 === "b"){
+//     crates[i].grounded = true;
+//     crates[i].y = crates[i].y-.5
+//   } else if (dir1 === "t") {
+//     crates[i].grounded = false
+//   };
+//     //crate elevator
+//     var dir2 = colCheck(crates[i], elevator[i]);
+//       if (dir2 === "b"){
+//       crates[i].grounded = true;
+//       crates[i].velY = elevator[i].dir
+//     }
+//     else if (dir1 === "t") {
+//       elevator[i].dir = -2;
+//   }else{crates[i].velY=-3
+//   }
+
+//   //Block Badguy collision
+// var dir2 = colCheck(crates[i],badGuy);
+//   if ( dir2 === "l"){
+//     badGuy.dir = "L"
+//   }else if (dir2 === "r"){
+//     badGuy.dir = "R"
+
+//   } else if (dir2 === "t") {
+//   console.log("dead tiger")
+//   };
+
+};
 var Jump = function(){
   if(!player.jumping && player.grounded){
    player.jumping = true;
@@ -959,14 +1037,16 @@ function update(){
     player.x = badGuy.x+12;
     player.velY = 0;
   };
-
+//clear canvas to update everything
   context.clearRect(0,0,width,height);
+//draw crate sign
+  Apparatus();
+  //make crates
 //run instructions function
 if (player.x===1320 && player.y===221){
   $("#bubble").attr("src", "public/images/bubble.gif")
 }
   //pause after dying
-Crate();
 
   if(player.dead>=90){
     player.dead=0
@@ -1055,20 +1135,6 @@ for (var i = 0; i < boxes.length; i++) {
   } else if (dir === "t") {
     player.velY *= -1;
   }
-
-  //crate
-    // crate vs obsticle boxes
-    var dir1 = colCheck(crate, boxes[i]);
-  if (dir1 === "l" || dir1 === "r"){
-    player.velX = 0;
-    player.jumping = false;
-  }else if (dir1 === "b"){
-    crate.grounded = true;
-    crate.y = crate.y-.5
-  } else if (dir1 === "t") {
-    crate.grounded = false
-  }
-
 
 }
 
@@ -1262,19 +1328,20 @@ if(points>0){
 
 ///////////////////////////draw BAD GUY block & attach collision
 if(badGuy.dead === false){
-  if (badGuy.jump === 122){
+  if (badGuy.jump === 101){
     badGuy.jump = 0;
+    badGuy.jumping = false;
   }
-
+if (badGuy.y < 738 && badGuy.jumping=== false){
+  badGuy.y = badGuy.y + 3
+  badGuy.x = badGuy.x +2
+}
   /////Tiger Leap
   if(badGuy.jump>=80 && badGuy.jump<=100){
+    badGuy.jumping = true
     badGuy.x= badGuy.x + badGuy.velX*2;
     badGuy.y= badGuy.y - 2
     badGuy.jump = badGuy.jump+1
-  }else if(badGuy.jump>100 && badGuy.jump <=121){
-    badGuy.x= badGuy.x + badGuy.velX*2;
-    badGuy.y= badGuy.y + 2
-    badGuy.jump = badGuy.jump +1
   }else{
     badGuy.x= badGuy.x + badGuy.velX;
     badGuy.jump = badGuy.jump + 1
@@ -1293,6 +1360,7 @@ if(badGuy.dead === false){
   }else{
     badGuy.skin = badGuy.skinL
     badGuy.velX = -3
+    console.log
   };
   
   context.drawImage(badGuy.skin, badGuy.x, badGuy.y, badGuy.width, badGuy.height)
@@ -1311,17 +1379,6 @@ if(badGuy.dead === false){
       player.velY *= -1;
       Die();
     };
-  };
-
-//Block Badguy collision
-var dir2 = colCheck(crate,badGuy);
-  if ( dir2 === "l"){
-    badGuy.dir = "L"
-  }else if (dir2 === "r"){
-    badGuy.dir = "R"
-
-  } else if (dir2 === "t") {
-  console.log("dead tiger")
   };
 
 };
@@ -1397,7 +1454,7 @@ for (i=0; i<elevator.length; i++)
       player.y = 221;
       player.dead = 1
     };
-    var dir1 = colCheck(player, elevator[i]);
+    var dir1 = colCheck(badGuy, elevator[i]);
     if (dir1 === "l" || dir1 === "r"){
       badGuy.velX = 0;
     }else if (dir1 === "b"){
@@ -1406,19 +1463,9 @@ for (i=0; i<elevator.length; i++)
     }
     else if (dir1 === "t") {
       elevator[i].dir = -2;
-      // alert("Tiger Smashed!")
-  };
-
-  var dir1 = colCheck(crate,elevator[i]);
-  if ( dir1 === "b"){
-    crate.velY= elevator[i].dir
-  }else if (dir1 === "t"){
-    elevator[i].dir = -2;
-  }else {crate.velY = 3
   };
 
 };
-
 
 // display game over
 if (lives.length === 0){
@@ -1427,6 +1474,48 @@ if (lives.length === 0){
 }
 
 
+ if(crates.length > 0){ 
+ for (i=0; i<crates.length; i++){
+  context.drawImage(crates[i].skin, crates[i].x,crates[i].y,crates[i].width,crates[i].height)
+  console.log(crates[i])
+// push the crate
+  var dir = colCheck(player, crates[i]);
+  if (dir === "l"){
+    crates[i].x = crates[i].x+ player.velX
+    player.jumping = false;
+
+  }else if(dir ==="r"){
+    crates[i].x = crates[i].x+ player.velX
+    player.jumping = false;
+  }else if (dir === "b"){
+    player.grounded = true;
+    player.jumping = false;
+    player.velY = 0
+  } else if (dir === "t") {
+    player.velY *= -1;
+  }
+
+      if (crates[i].x > width){
+      crates[i].x = 0;
+    }else if (crates[i].x < 0){
+      crates[i].x = width-crates[i].width;
+    } 
+  crates[i].y += crates[i].velY;}
+
+//     // crate vs obsticle boxes
+for(i=0;i<boxes.length;i++)
+{    var dir1 = colCheck(crates[i], boxes[i]);
+  if (dir1 === "l" || dir1 === "r"){
+    player.velX = 0;
+    player.jumping = false;
+  }else if (dir1 === "b"){
+    crates[i].grounded = true;
+    crates[i].y = crates[i].y-.5
+  } else if (dir1 === "t") {
+    crates[i].grounded = false
+  };
+}
+}
 
 
 

@@ -1269,15 +1269,15 @@ if(badGuy.dead === false){
   /////Tiger Leap
   if(badGuy.jump>=80 && badGuy.jump<=100){
     badGuy.x= badGuy.x + badGuy.velX*2;
-    badGuy.y= badGuy.y - 2
-    badGuy.jump = badGuy.jump+1
+    // badGuy.y= badGuy.y - 2
+    // badGuy.jump = badGuy.jump+1
   }else if(badGuy.jump>100 && badGuy.jump <=121){
     badGuy.x= badGuy.x + badGuy.velX*2;
-    badGuy.y= badGuy.y + 2
-    badGuy.jump = badGuy.jump +1
+    // badGuy.y= badGuy.y + 2
+    // badGuy.jump = badGuy.jump +1
   }else{
     badGuy.x= badGuy.x + badGuy.velX;
-    badGuy.jump = badGuy.jump + 1
+    // badGuy.jump = badGuy.jump + 1
   }
 
   if(badGuy.x > 1320){
@@ -1293,6 +1293,7 @@ if(badGuy.dead === false){
   }else{
     badGuy.skin = badGuy.skinL
     badGuy.velX = -3
+    console.log("hey guys")
   };
   
   context.drawImage(badGuy.skin, badGuy.x, badGuy.y, badGuy.width, badGuy.height)
@@ -1406,7 +1407,7 @@ for (i=0; i<elevator.length; i++)
     }
     else if (dir1 === "t") {
       elevator[i].dir = -2;
-      // alert("Tiger Smashed!")
+      alert("Tiger Smashed!")
   };
 
   var dir1 = colCheck(crate,elevator[i]);
